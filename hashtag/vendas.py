@@ -6,8 +6,8 @@ table = pd.read_excel('data/vendas.xlsx')
 # print(table)
 
 # Valor total de vendas
-faturamento_toral = table['Valor Final'].sum()
-print(f'Faturamento Total: \033[35mR${faturamento_toral:.2f}\033[m')
+faturamento_total = table['Valor Final'].sum()
+print(f'Faturamento Total: \033[35mR${faturamento_total:.2f}\033[m')
 
 # faturamento por loja
 # [[]] - Usar dois colchetes para selecionar mais de uma coluna
