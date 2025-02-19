@@ -1,87 +1,99 @@
-# 🛠️ Processamento de Erros e Geração de Relatórios
+# 🚀 Análise e Processamento de Erros com Python 📊
 
-Este repositório contém scripts desenvolvidos em Python para a manipulação, análise e distribuição de relatórios de erros processados. São utilizados dados oriundos de arquivos Excel, que são processados e consolidados em dashboards e enviados via email para as equipes responsáveis.
+Este repositório contém scripts Python para análise, categorização e processamento de erros a partir de arquivos Excel, gerando relatórios detalhados e automatizando o envio de e-mails com os dados analisados. Além disso, os dados processados podem ser visualizados no **Power BI** para facilitar a análise 📈.
 
-## 📁 Conteúdo
+## 🛠️ Estrutura dos Scripts
 
-- **processamento_dados.py**  
-  Realiza a leitura, tratamento e formatação dos dados do arquivo "Processado Erro.xlsx". Entre as atividades executadas estão:  
-  - Limpeza e padronização de colunas e valores nulos.  
-  - Criação de novas colunas e cálculos (por exemplo, "Dias Parados no Erro" e "Mês Alteração").  
-  - Realocações de registros conforme regras definidas (por exemplo, atribuição de responsáveis, empresas e categorias de erro).  
-  - Geração de relatórios em Excel com dashboards customizados para cada empresa.
+### 1. `processamento_erros.py` 📝
 
-- **atualizacao_base.py**  
-  Atualiza as bases de dados de erros, gerenciando registros novos, em andamento e resolvidos. As principais funções deste script são:  
-  - Limpeza da base de novos registros e criação de uma nova base estruturada.  
-  - Verificação se um registro já consta na base "Em Andamento" ou "Resolvidos", alterando o status conforme necessário.  
-  - Consolidação dos registros resolvidos e atualização das datas de conclusão.  
-  - Salvamento dos dados atualizados de volta em um arquivo Excel com múltiplas guias.
+* 🔄 Converte arquivos `.xls` para `.xlsx`.
+* 🔍 Processa arquivos de erro, realizando a formatação dos dados e categorizando os erros por tipo, origem e responsabilidade.
+* 📊 Aplica filtros e cria colunas adicionais para melhor organização.
+* 🏢 Segmenta os dados processados e gera relatórios organizados por empresa.
+* 🎨 Formata e salva os dados em arquivos Excel, aplicando estilos personalizados.
 
-- **geracao_email.py**  
-  Gera e envia e-mails personalizados com a análise dos erros, utilizando o Outlook via `win32com.client`. As principais funcionalidades são:  
-  - Leitura dos relatórios gerados para cada empresa.  
-  - Extração de métricas (total de casos, grupos empresariais de maior impacto, aging acima de 15 dias, principais ofensores etc.).  
-  - Montagem de um email com corpo em HTML contendo as informações consolidadas e anexando os relatórios relevantes.  
-  - Envio dos e-mails para destinatários específicos (configurados via dicionários de emails) com cópias, conforme a empresa.
+### 2. `atualizacao_status.py` 🔄
 
-## 📦 Dependências
+* 📌 Atualiza o status dos erros identificados como "Novo", "Em Andamento" ou "Resolvido".
+* ✅ Identifica registros resolvidos e os move para uma planilha de resoluções.
+* 🗑️ Remove registros resolvidos da base de erros em andamento.
+* 💾 Salva os dados atualizados em um arquivo Excel sem alterar outras abas.
 
-Para executar os scripts, certifique-se de ter instaladas as seguintes bibliotecas Python:
+### 3. `envio_relatorios.py` ✉️
 
-- [pandas](https://pandas.pydata.org/)
-- [openpyxl](https://openpyxl.readthedocs.io/)
-- [pywin32](https://github.com/mhammond/pywin32) (necessário para integração com o Outlook)
+* 📑 Lê os relatórios processados e segmentados por empresa.
+* 🔎 Identifica padrões e categorias de erro para compilar insights.
+* 📨 Gera e-mails automáticos formatados com análises detalhadas.
+* 📎 Anexa relatórios e outros documentos relevantes.
+* 📤 Envia os e-mails para listas predefinidas de destinatários.
 
-Você pode instalá-las utilizando o `pip`:
+## 📚 Bibliotecas Utilizadas
+
+Os scripts utilizam as seguintes bibliotecas Python:
+
+* 🐼 `pandas`: Para manipulação e análise de dados.
+* 📂 `openpyxl`: Para leitura e escrita de arquivos Excel no formato `.xlsx`.
+* 📑 `xlrd`: Para leitura de arquivos `.xls` (necessário para conversão para `.xlsx`).
+* 📧 `win32com.client`: Para integração com o Microsoft Outlook e envio automatizado de e-mails.
+* ⏳ `datetime`: Para manipulação de datas nos relatórios.
+* 🗂️ `os`: Para manipulação de diretórios e arquivos.
+
+## 🔧 Requisitos
+
+Para rodar os scripts, instale as bibliotecas necessárias:
 
 ```bash
-pip install pandas openpyxl pywin32
-🗂️ Estrutura de Pastas e Arquivos
-Copiar
-Editar
-├── PROCESSADO ERRO
-│   └── Analise de Dados
-│       ├── Relatorio - Dash.xlsx
-│       ├── Base.xlsx
-│       ├── EMPRESAS
-│           ├── Relatorio - ZUPPER VIAGENS.xlsx
-│           ├── Relatorio - KONTIK BUSINESS TRAVEL.xlsx
-│           ├── Relatorio - KONTRIP VIAGENS.xlsx
-│           ├── Relatorio - INOVENTS.xlsx
-│           └── Relatorio - GRUPO KONTIK.xlsx
-├── processamento_dados.py
-├── atualizacao_base.py
-└── geracao_email.py
-💡 Observação:
+pip install pandas openpyxl xlrd pywin32
+```
 
-Verifique se os arquivos Excel estão organizados conforme o esperado e se as planilhas (sheets) possuem os nomes corretos.
-Alguns textos podem apresentar problemas de codificação (ex.: "SistÃªmico" em vez de "Sistêmico"). Recomenda-se utilizar UTF-8 ao salvar e ler os arquivos para evitar inconsistências.
-🚀 Como Utilizar
-Processamento de Dados e Geração de Relatórios
-Execute o script processamento_dados.py para processar os dados dos arquivos Excel, aplicar as regras de tratamento e gerar os relatórios (incluindo a criação dos dashboards e planilhas por empresa).
+## ▶️ Como Usar
 
-Atualização das Bases de Dados
-Após a geração dos relatórios, execute o script atualizacao_base.py para atualizar os status dos registros (Novo, Em Andamento, Resolvido) e consolidar as bases de dados em um único arquivo Excel.
+1. **Processamento de Erros:**
 
-Geração e Envio de Emails
-Por fim, execute o script geracao_email.py para gerar os emails com a análise dos erros e enviá-los aos destinatários configurados.
-⚠️ Atenção: O script utiliza o Outlook instalado na máquina para envio dos emails. Verifique as configurações e permissões do Outlook para automação.
+   ```bash
+   python processamento_erros.py
+   ```
 
-⚙️ Configurações Específicas
-Dados de Entrada:
-Os scripts assumem que os arquivos Excel estão localizados na pasta PROCESSADO ERRO/Analise de Dados/ e que as planilhas possuem os nomes conforme especificados nos códigos.
+   Esse script irá converter arquivos, processar os dados e gerar relatórios segmentados.
+2. **Atualização de Status:**
 
-Envio de Emails:
+   ```bash
+   python atualizacao_status.py
+   ```
 
-As listas de destinatários (envio e cópia) estão definidas nos dicionários emails_corp, emails_zupper, emails_kontrip, emails_grpkontik, emails_ktk e emails_inovents.
-Certifique-se de ajustar ou atualizar os emails conforme a necessidade do seu ambiente.
-💬 Considerações Finais
-Testes:
-Antes de executar os scripts em produção, recomenda-se testá-los em um ambiente de desenvolvimento para garantir que as regras de negócio e o fluxo de dados estejam corretos.
+   Ele atualiza o status dos registros de erro e salva os dados atualizados no Excel.
+3. **Envio de Relatórios:**
 
-Suporte e Contribuições:
-Se você encontrar algum problema ou tiver sugestões de melhorias, sinta-se à vontade para abrir uma issue ou enviar um pull request.
+   ```bash
+   python envio_relatorios.py
+   ```
 
-📧 Contato
-Para dúvidas ou mais informações, entre em contato com o responsável pelo projeto ou abra uma issue neste repositório.
+   O script gera e-mails formatados com análises e relatórios anexados.
+
+## 📂 Estrutura de Diretórios
+
+```
+/
+|-- data-analysis-python/
+|   |-- PROCESSADO ERRO/
+|   |   |-- Base.xlsx
+|   |   |-- Relatorio - Dash.xlsx
+|   |   |-- EMPRESAS/
+|   |   |   |-- Relatorio - ZUPPER VIAGENS.xlsx
+|   |   |   |-- Relatorio - KONTIK BUSINESS TRAVEL.xlsx
+|   |   |   |-- Relatorio - KONTRIP VIAGENS.xlsx
+|   |   |   |-- Relatorio - GRUPO KONTIK.xlsx
+|-- processamento_erros.py
+|-- atualizacao_status.py
+|-- envio_relatorios.py
+```
+
+## 🤝 Contribuição
+
+Se quiser contribuir, sinta-se à vontade para abrir um pull request com melhorias ou correções.
+
+## ⚖️ Licença
+
+Este projeto está sob a licença MIT. Consulte o arquivo LICENSE para mais detalhes.
+
+🔎 **Visualização dos dados no Power BI disponível!** 📊
