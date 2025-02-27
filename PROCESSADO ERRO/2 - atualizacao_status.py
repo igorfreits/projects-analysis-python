@@ -16,8 +16,8 @@ data_atual = pd.to_datetime('today').date()
 
 # Definir as colunas desejadas
 novas_colunas = [
-    'Status', 'Handle PNR', 'Handle ACC', 'Localizadora', 'Requisição',
-    'OBTS', 'Grupo Empresarial', 'Serviço', 'Mensagem Erro', 'TIPO DE ERRO',
+    'Status', 'Handle PNR', 'Handle ACC', 'Localizadora', 
+    'OBTS', 'Grupo Empresarial', 'Serviço', 'Mensagem Erro', 'TIPO DE ERRO','EMPRESA', 'CATEGORIA DE ERRO',
     'RESPONSÁVEL', 'Data Inclusão'
 ]
 
