@@ -432,6 +432,16 @@ for row in range(len(processado_erro)):
                   f' feitas pelo consultor "{processado_erro.at[row, "Agente Emissão"]}"\033[m')
             break
 
+# verificação casos Suporte Benner - acima de 10 dias
+print(f'\033[1;31mTotal de casos - Suporte Benner:\033[m {sum(processado_erro["RESPONSÁVEL"].str.contains("Suporte Benner"))}')
+total_suporte_aging = sum(
+    (processado_erro["RESPONSÁVEL"].str.contains("Suporte Benner")) &
+    (processado_erro["Aging Inclusão"].isin(["09 a 15 dias","16 a 23 dias", "24 a 31 dias", "31 dias ou +"]))
+)
+
+print(f'\033[1;31mTotal de casos Suporte Benner + Aging Inclusão acima de 10 dias:\033[m {total_suporte_aging}')
+print()
+
 # Salvar o arquivo original
 processado_erro.to_excel(data_path + 'Processado Erro.xlsx', index=False)
  
