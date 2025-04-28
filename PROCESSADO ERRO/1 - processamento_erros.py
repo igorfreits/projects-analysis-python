@@ -8,27 +8,31 @@ import os
 import pandas as pd
 import os
 
-def converter_xls_para_xlsx(caminho_arquivo):
-    if not caminho_arquivo.lower().endswith(".xls"):
-        raise ValueError("\033[91m-O arquivo fornecido não é um .xls\033[0m")
 
+def converter_xls_para_xlsx(caminho_arquivo):
+    if not caminho_arquivo or not isinstance(caminho_arquivo, str):
+        raise ValueError("Caminho do arquivo inválido.")
+
+    if not caminho_arquivo.lower().endswith(".xls"):
+        raise ValueError("O arquivo fornecido não é um .xls")
 
     if not os.path.exists(caminho_arquivo):
-        raise FileNotFoundError(f"\033[91m-Arquivo não encontrado: {caminho_arquivo}\033[0m")
+        raise FileNotFoundError(f"Arquivo não encontrado: {caminho_arquivo}")
 
     novo_caminho = caminho_arquivo.replace(".xls", ".xlsx")
 
     try:
-        df = pd.read_excel(caminho_arquivo, engine="xlrd") 
-        if df is None or df.empty:
-            raise ValueError("\033[91m-O arquivo está vazio ou não pôde ser lido corretamente\033[0m")
+        df = pd.read_excel(caminho_arquivo, engine="xlrd")
+        if df.empty:
+            raise ValueError("O arquivo está vazio.")
 
         df.to_excel(novo_caminho, index=False, engine="openpyxl")
-        print(f"\033[94m-Arquivo convertido com sucesso. Local: {novo_caminho}\033[0m")
         return novo_caminho
     except Exception as e:
-        print(f"\033[91m-Erro ao converter {caminho_arquivo}: {e}\033[0m")
+        print(f"Erro ao converter {caminho_arquivo}: {e}")
         return None
+
+
 
 # Caminho dos arquivos
 data_path = 'data-analysis-python/PROCESSADO ERRO/'
@@ -42,9 +46,12 @@ if os.path.exists(arquivo_xls):
 
 # ARQUIVOS
 processado_erro = pd.read_excel(arquivo_xls)
-clientes_fcm = pd.read_excel(data_path + 'Parametros.xlsx', sheet_name='Clientes FCM')
-parametros_msg = pd.read_excel(data_path + 'Parametros.xlsx', sheet_name='Parametros')
-
+realocacao = pd.read_excel(data_path + 'Realocacao.xlsx')
+ 
+parametros, list_erros, info, clientes_fcm = [
+    pd.read_excel(data_path + 'Parametros.xlsx', sheet_name=sheet)
+   
+    for sheet in ['Parametros', 'Lista de erros', 'Info', 'Clientes FCM']]
  
 # Declaração de guias - Relatório DASH
 wb = load_workbook(data_path + 'Relatorio - Dash.xlsx')
@@ -65,7 +72,6 @@ processado_erro['CATEGORIA DE ERRO'] = 'Qualidade dos dados'
 processado_erro['EMPRESA'] = ''
 processado_erro['RESPONSÁVEL'] = 'Operações - CORP'
  
-
 # Preenchimento de valores nulos
 processado_erro['Mensagem Erro'].fillna(
     'Erro não localizado', inplace=True)
@@ -87,16 +93,16 @@ mask_kontrip = processado_erro['Canal de Vendas'].str.contains(
 processado_erro['OBTS'] = processado_erro['OBTS'].mask(mask_kontrip, 'KONTRIP')
  
 processado_erro['Mensagem Erro'] = processado_erro['Mensagem Erro'].astype(str)
-# parametros['Mensagem'] = parametros['Mensagem'].astype(str)
+parametros['Mensagem'] = parametros['Mensagem'].astype(str)
  
 # Atribuição de campos, origem do erro e tipo de erro
 for row in range(len(processado_erro)):
-    for row2 in range(len(parametros_msg)):
-        if parametros_msg['Mensagem'][row2] in processado_erro['Mensagem Erro'][row]:
-            processado_erro.at[row, 'CAMPO'] = parametros_msg.at[row2, 'Campo']
-            processado_erro.at[row, 'ORIGEM DO ERRO'] = parametros_msg.at[row2, 'Origem do Erro']
-            processado_erro.at[row, 'TIPO DE ERRO'] = parametros_msg.at[row2, 'Tipo de Erro']
-            processado_erro.at[row, 'CATEGORIA DE ERRO'] = parametros_msg.at[row2, 'Categoria de Erro']
+    for row2 in range(len(parametros)):
+        if parametros['Mensagem'][row2] in processado_erro['Mensagem Erro'][row]:
+            processado_erro.at[row, 'CAMPO'] = parametros.at[row2, 'Campo']
+            processado_erro.at[row, 'ORIGEM DO ERRO'] = parametros.at[row2, 'Origem do Erro']
+            processado_erro.at[row, 'TIPO DE ERRO'] = parametros.at[row2, 'Tipo de Erro']
+            processado_erro.at[row, 'CATEGORIA DE ERRO'] = parametros.at[row2, 'Categoria de Erro']
 
 # Formatação de Datas
 processado_erro['Aging Inclusão'] = (
@@ -134,6 +140,12 @@ processado_erro['Data Alteração'] = pd.to_datetime(processado_erro['Data Alter
 # Atribuição - Fornecedor
 processado_erro.loc[processado_erro['Mensagem Erro'].str.contains('Fornecedor não preenchido', case=False), 
                     ['CAMPO', 'ORIGEM DO ERRO', 'TIPO DE ERRO']] = ['Falta de Fornecedor', 'Campo Fornecedor', 'Dados do Fornecedor']
+
+# Atribuição - de responsáveis
+for row in range(len(processado_erro)):
+    for row2 in range(len(info)):
+        if info['CAMPO_INFO'][row2] in processado_erro['CAMPO'][row]:
+            processado_erro.at[row, 'RESPONSÁVEL'] = info.at[row2, 'RESPONSÁVEL_INFO']
 
 
 # Preenchimento de valores nulos(Status Requisição)
@@ -247,7 +259,7 @@ processado_erro.loc[
 # Realocação - Suporte Benner (Falta de Fornecedor - Sabre - Hotel - ONLINE)
 processado_erro.loc[
     (processado_erro['CAMPO'].str.contains('Falta de Fornecedor')) &
-    ((processado_erro['Agente Emissão'].str.contains('WS')) | (processado_erro['Agente Emissão'].str.contains('CT'))) | (processado_erro['Agente Emissão'].str.contains('WT')) &
+    ((processado_erro['Agente Emissão'].str.contains('WS')) | (processado_erro['Agente Emissão'].str.contains('CT'))) &
     ((processado_erro['OBTS'] == 'SABRE') &
     (processado_erro['Serviço'] == 'Hotel')),['RESPONSÁVEL', 'CATEGORIA DE ERRO']
 ] = ['Suporte Benner', 'Sistêmico']
@@ -331,8 +343,8 @@ processado_erro.loc[
 ] = ['Suporte Benner', 'Sistêmico']
  
 # Realocação - Usando planilha de realocação - por localizador
-# realocacao_handle = processado_erro.merge(realocacao[['Handle ACC', 'Equipe ATUAL']], on='Handle ACC', how='left')
-# processado_erro.loc[realocacao_handle['Equipe ATUAL'].notnull(), 'RESPONSÁVEL'] = realocacao_handle['Equipe ATUAL']
+realocacao_handle = processado_erro.merge(realocacao[['Handle ACC', 'Equipe ATUAL']], on='Handle ACC', how='left')
+processado_erro.loc[realocacao_handle['Equipe ATUAL'].notnull(), 'RESPONSÁVEL'] = realocacao_handle['Equipe ATUAL']
  
 # Realocação- Conciliação aérea (Duplicidade de RLOC ou Bilhete duplicado)
 processado_erro.loc[
@@ -359,6 +371,13 @@ processado_erro.loc[
     (processado_erro['OBTS'] == 'SABRE') &
     (processado_erro['Mensagem Erro'].str.contains('UNDEFINED')),
     'RESPONSÁVEL'] = 'Suporte KCS'
+
+# Realocações - Suporte KCS (The INSERT statement conflicted with the FOREIGN KEY)
+processado_erro.loc[
+    (processado_erro['Mensagem Erro'].str.contains(
+        'The INSERT statement conflicted with the FOREIGN KEY')),
+    ['CAMPO', 'ORIGEM DO ERRO', 'TIPO DE ERRO', 'CATEGORIA DE ERRO', 'RESPONSÁVEL']
+] = ['Falta de informação Gerencial', 'Mais de um campo não preenchido', 'Dados do Fornecedor', 'Sistêmico', 'Suporte KCS']
  
 # Realocação - Conciliação aérea (Esta accounting está conciliada no BSP. Bilhete)
 processado_erro.loc[
@@ -432,16 +451,6 @@ for row in range(len(processado_erro)):
                   f' feitas pelo consultor "{processado_erro.at[row, "Agente Emissão"]}"\033[m')
             break
 
-# verificação casos Suporte Benner - acima de 10 dias
-print(f'\033[1;31mTotal de casos - Suporte Benner:\033[m {sum(processado_erro["RESPONSÁVEL"].str.contains("Suporte Benner"))}')
-total_suporte_aging = sum(
-    (processado_erro["RESPONSÁVEL"].str.contains("Suporte Benner")) &
-    (processado_erro["Aging Inclusão"].isin(["09 a 15 dias","16 a 23 dias", "24 a 31 dias", "31 dias ou +"]))
-)
-
-print(f'\033[1;31mTotal de casos Suporte Benner + Aging Inclusão acima de 10 dias:\033[m {total_suporte_aging}')
-print()
-
 # Salvar o arquivo original
 processado_erro.to_excel(data_path + 'Processado Erro.xlsx', index=False)
  
@@ -486,6 +495,7 @@ def personalizacao(relatorio):
         cabecalho = relatorio[letra_coluna + '1']
         cabecalho.fill = colunas_padrao
         cabecalho.font = cor_da_fonte_1
+        # cabecalho.value = cabecalho.value.upper()  # Convertendo para maiúsculo
         
         if letra_coluna in ['F','G','AK','AL','AM', 'AN','AO','AP','AQ']:
             cabecalho.fill = colunas_adicionais
@@ -509,7 +519,7 @@ wb.save(data_path + 'Relatorio - Dash.xlsx')
 
 # Carregar a planilha original
 relatorio_dash = pd.read_excel(data_path + 'Relatorio - Dash.xlsx', sheet_name='Processado Erro - BASE')
-data_path = r'data-analysis-python\PROCESSADO ERRO\\'
+data_path = r'PROCESSADO ERRO\Analise de Dados\\'
 
 empresas = relatorio_dash['EMPRESA'].unique()
 
@@ -539,4 +549,5 @@ for empresa in empresas:
     wb.save(output_file)
 
     print(f'Relatorio - {empresa} - Salvo com sucesso!')
-print('\033[1;32m\n-Relatório gerado com sucesso!\033[m')
+print()
+print('\033[1;32m-Relatório gerado com sucesso!\033[m')

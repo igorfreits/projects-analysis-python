@@ -19,16 +19,18 @@ relatorio_erro = pd.read_excel(data_path + 'Relatorio - Dash.xlsx', sheet_name='
 # Emails
 emails_corp = {
     'envio': [
-    'robertasilva@kontik.com.br','brunomoreira@kontik.com.br','camilasilva@kontik.com.br','elaineoliveira@kontik.com.br',
-    'marcelovieira@kontik.com.br','najlavieira@kontik.com.br','rodrigoberton@kontik.com.br','ceciliaherculino@kontik.com.br',
-    'giovannapereira@kontik.com.br','henriquetolentino@kontik.com.br','karinaxavier@kontik.com.br',
-    'lucieneleal@kontik.com.br','margaretokura@kontik.com.br','michellysilva@kontik.com.br','nayaraoliveira@kontik.com.br',
-    'wagneyoliveira@kontik.com.br','yurirodrigues@kontik.com.br','reinildosantos@kontik.com.br',
-    'nucleonabr@kontik.com.br','taisdiniz@kontik.com.br','alicasantos@kontik.com.br','joaovillar@kontik.com.br','pamelasilva@kontik.com.br'],    
+        'robertasilva@kontik.com.br','wagneyoliveira@kontik.com.br','yurirodrigues@kontik.com.br','henriquetolentino@kontik.com.br','rodrigoberton@kontik.com.br',
+        'najlavieira@kontik.com.br','wellingtonribeiro@kontik.com.br','michellysilva@kontik.com.br','elaineoliveira@kontik.com.br','eduardomanso@kontik.com.br',
+        'vanessadias@kontik.com.br','danilocardoso@kontik.com.br','igorsantos@kontik.com.br','diegomoreira@kontik.com.br','thamiressanto@kontik.com.br',
+        'giselecarmo@kontik.com.br','nucleonabr@kontik.com.br','italomarques@kontik.com.br','cartaoaereo@kontik.com.br','jackelinenascimento@kontik.com.br',
+        'andreajorge@kontik.com.br','adailtonsantos@kontik.com.br','reinildosantos@kontik.com.br','joaovillar@kontik.com.br','robertasilva@kontik.com.br',
+        'andreiaalves@kontik.com.br','herbertsantana@kontik.com.br','camilasilva@kontik.com.br','robertobento@kontik.com.br','jacquelinesantos@kontik.com.br',
+        'anafeitosa@kontik.com.br','mylenasilva@kontik.com.br','samsung@kontik.com.br'
+    ],    
     'copia': [
-        'faturamentocliente@kontik.com.br','jackelinenascimento@kontik.com.br','rafaelzizzi@kontik.com.br','vanessadias@kontik.com.br',
-        'adailtonsantos@kontik.com.br','lanatakuma@kontik.com.br','alexandrecastro@kontik.com.br','cartaoaereo@kontik.com.br',
-        'andreajorge@kontik.com.br','raquelmonteiro@kontik.com.br','elidealtran@kontik.com.br','conciliacao_aereo@kontik.com.br','pliniocarvalho@kontik.com.br'
+        'alexandrecastro@kontik.com.br','lanatakuma@kontik.com.br','thiagobatello@kontik.com.br','danielacoelho@kontik.com.br',
+        'rafaelzizzi@kontik.com.br','luisvasquez@kontik.com.br','pliniocarvalho@kontik.com.br'
+
         ]}
 
 #Empresa - ZUPPER VIAGENS
@@ -267,25 +269,21 @@ def geracao_email(relatorio_empresa=relatorio_erro, empresa='GRUPO KONTIK', emai
     <blockquote>
         <p> <strong>{primeiro_ofensor['obt']}:</strong> {primeiro_ofensor['qtd']} casos de {primeiro_ofensor['campo']} sendo {primeiro_ofensor['porcentagem']:.2f}% do total de casos</p>
         <p> Causa: </p>
-        <p> Responsável: Suporte KCS - Operações - Suporte Benner  - Central de Emissão </p>
     </blockquote>
     <br>
     <blockquote>
         <p> <strong>{segundo_ofensor['obt']}:</strong> {segundo_ofensor['qtd']} casos de {segundo_ofensor['campo']} sendo {segundo_ofensor['porcentagem']:.2f}% do total de casos</p>
         <p> Causa: </p>
-        <p> Responsável: Suporte KCS - Operações - Suporte Benner  - Central de Emissão </p>
     </blockquote>
     <br>
     <blockquote>
         <p> <strong>{terceiro_ofensor['obt']}:</strong> {terceiro_ofensor['qtd']} casos de {terceiro_ofensor['campo']} sendo {terceiro_ofensor['porcentagem']:.2f}% do total de casos</p>
         <p> Causa: </p>
-        <p> Responsável: Suporte KCS - Operações - Suporte Benner  - Central de Emissão </p>
     </blockquote>
     <br>
     <blockquote>
         <p> <strong>{quarto_ofensor['obt']}:</strong> {quarto_ofensor['qtd']} casos de {quarto_ofensor['campo']} sendo {quarto_ofensor['porcentagem']:.2f}% do total de casos</p>
         <p> Causa: </p>
-        <p> Responsável: Suporte KCS - Operações - Suporte Benner  - Central de Emissão </p>
     </blockquote>
 
     <br>
