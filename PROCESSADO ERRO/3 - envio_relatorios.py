@@ -1,31 +1,28 @@
+import os
 import win32com.client as win32
 import pandas as pd
 from datetime import datetime
 
-data_path = 'data-analysis-python/PROCESSADO ERRO/'
-
 # Importando os arquivos
-relatorio_erro_zupper = pd.read_excel(data_path + 'EMPRESAS/Relatorio - ZUPPER VIAGENS.xlsx')
-relatorio_erro_corp = pd.read_excel(data_path + 'EMPRESAS/Relatorio - KONTIK BUSINESS TRAVEL.xlsx')
-relatorio_erro_kontrip = pd.read_excel(data_path + 'EMPRESAS/Relatorio - KONTRIP VIAGENS.xlsx')
-#relatorio_erro_inovents = pd.read_excel(data_path + 'EMPRESAS/Relatorio - INOVENTS.xlsx')
-relatorio_erro_grpktk = pd.read_excel(data_path + 'EMPRESAS/Relatorio - GRUPO KONTIK.xlsx')
+relatorio_erro = pd.read_excel('data-analysis-python/PROCESSADO ERRO/Relatorio - Dash.xlsx', sheet_name='Processado Erro - BASE')
+relatorio_erro_zupper = pd.read_excel('data-analysis-python/PROCESSADO ERRO/EMPRESAS/Relatorio - ZUPPER VIAGENS.xlsx')
+relatorio_erro_corp = pd.read_excel('data-analysis-python/PROCESSADO ERRO/EMPRESAS/Relatorio - KONTIK BUSINESS TRAVEL.xlsx')
+relatorio_erro_kontrip = pd.read_excel('data-analysis-python/PROCESSADO ERRO/EMPRESAS/Relatorio - KONTRIP VIAGENS.xlsx')
+relatorio_erro_inovents = pd.read_excel('data-analysis-python/PROCESSADO ERRO/EMPRESAS/Relatorio - INOVENTS.xlsx')
+relatorio_erro_grpktk = pd.read_excel('data-analysis-python/PROCESSADO ERRO/EMPRESAS/Relatorio - GRUPO KONTIK.xlsx')
 
-novo_arquivo_resolvido = pd.read_excel(data_path + 'Base.xlsx', sheet_name='Novo Arquivo')
-base_resolvido = pd.read_excel(data_path + 'Base.xlsx', sheet_name='Resolvidos')
-relatorio_erro = pd.read_excel(data_path + 'Relatorio - Dash.xlsx', sheet_name='Processado Erro - BASE')
-
+novo_arquivo_resolvido = pd.read_excel('data-analysis-python/PROCESSADO ERRO/Base.xlsx', sheet_name='Novo Arquivo')
+base_resolvido = pd.read_excel('data-analysis-python/PROCESSADO ERRO/Base.xlsx', sheet_name='Resolvidos')
 
 # Emails
 emails_corp = {
     'envio': [
-        'robertasilva@kontik.com.br','wagneyoliveira@kontik.com.br','yurirodrigues@kontik.com.br','henriquetolentino@kontik.com.br','rodrigoberton@kontik.com.br',
-        'najlavieira@kontik.com.br','wellingtonribeiro@kontik.com.br','michellysilva@kontik.com.br','elaineoliveira@kontik.com.br','eduardomanso@kontik.com.br',
-        'vanessadias@kontik.com.br','danilocardoso@kontik.com.br','igorsantos@kontik.com.br','diegomoreira@kontik.com.br','thamiressanto@kontik.com.br',
-        'giselecarmo@kontik.com.br','nucleonabr@kontik.com.br','italomarques@kontik.com.br','cartaoaereo@kontik.com.br','jackelinenascimento@kontik.com.br',
-        'andreajorge@kontik.com.br','adailtonsantos@kontik.com.br','reinildosantos@kontik.com.br','joaovillar@kontik.com.br','robertasilva@kontik.com.br',
+        'wagneyoliveira@kontik.com.br','yurirodrigues@kontik.com.br',
+        'wellingtonribeiro@kontik.com.br','michellysilva@kontik.com.br','eduardomanso@kontik.com.br',
+        'vanessadias@kontik.com.br','giselecarmo@kontik.com.br','nucleonabr@kontik.com.br','cartaoaereo@kontik.com.br','jackelinenascimento@kontik.com.br',
+        'andreajorge@kontik.com.br','adailtonsantos@kontik.com.br','reinildosantos@kontik.com.br',
         'andreiaalves@kontik.com.br','herbertsantana@kontik.com.br','camilasilva@kontik.com.br','robertobento@kontik.com.br','jacquelinesantos@kontik.com.br',
-        'anafeitosa@kontik.com.br','mylenasilva@kontik.com.br','samsung@kontik.com.br'
+        'anafeitosa@kontik.com.br','mylenasilva@kontik.com.br','samsung@kontik.com.br','giseledenck@kontik.com.br','leticiapinheiro@kontik.com.br','andressasilva@kontik.com.br'
     ],    
     'copia': [
         'alexandrecastro@kontik.com.br','lanatakuma@kontik.com.br','thiagobatello@kontik.com.br','danielacoelho@kontik.com.br',
@@ -36,7 +33,7 @@ emails_corp = {
 #Empresa - ZUPPER VIAGENS
 emails_zupper = {
     'envio': [
-    'higorlima@zupper.com.br'],
+        'higorlima@zupper.com.br'],
     'copia': [
         'angelasilva@zupper.com.br','pliniocarvalho@kontik.com.br']}
 
@@ -50,8 +47,8 @@ emails_kontrip = {
 # Empresa - GRUPO KONTIK
 emails_grpkontik = {
     'envio' : ['mylenasilva@kontik.com.br','icaroxavier@kontik.com.br',
-    'conciliacao_aereo@kontik.com.br','suporte.benner@kontik.com.br','thiagobatello@kontik.com.br',
-    'victorbazogli@kontik.com.br','wellingtonribeiro@kontik.com.br'],
+            'conciliacao_aereo@kontik.com.br','suporte.benner@kontik.com.br','thiagobatello@kontik.com.br',
+            'victorbazogli@kontik.com.br','wellingtonribeiro@kontik.com.br'],
     'copia': ['biancasantos@kontik.com.br','luisvasquez@kontik.com.br',
               'pliniocarvalho@kontik.com.br', 'williancardoso@kontik.com.br']}
 
@@ -63,22 +60,22 @@ emails_ktk = {
 # Empresa - INOVENTS
 emails_inovents = {
     'envio' : ['mariatrindade@kontik.com.br','flaviomazzola@inovents.com.br'],
-    'copia': ['alexandrecastro@kontik.com.br','josysilva@inovents.com.br','administrativo@inovents.com.br','lucianagarcez@inovents.com.br','pliniocarvalho@kontik.com.br']}
+    'copia': ['alexandrecastro@kontik.com.br','administrativo@inovents.com.br','lucianagarcez@inovents.com.br','pliniocarvalho@kontik.com.br']}
 
 
-def geracao_email(relatorio_empresa=relatorio_erro, empresa='GRUPO KONTIK', email_envio=emails_grpkontik['envio'], email_copia=emails_grpkontik['copia']):
+def geracao_email(relatorio=relatorio_erro, empresa='GRUPO KONTIK', email_envio=emails_grpkontik['envio'], email_copia=emails_grpkontik['copia']):
 
     # Total de casos - Processado Erro
-    total_casos = len(relatorio_empresa)
+    total_casos = len(relatorio)
     
     # Top 5 Grupos Empresariais
-    top_5_grp_emp = ', '.join(relatorio_empresa['Grupo Empresarial'].value_counts().head(5).index)
+    top_5_grp_emp = ', '.join(relatorio['Grupo Empresarial'].value_counts().head(5).index)
 
     # Aging Acima de 15 Dias
-    soma_aging_alteracao = len(relatorio_empresa.loc[relatorio_empresa['Aging Alteração'].str.contains(
+    soma_aging_alteracao = len(relatorio.loc[relatorio['Aging Alteração'].str.contains(
         '16 a 23 dias|24 a 31 dias|31 dias ou +')])
     
-    soma_aging_inclusao = len(relatorio_empresa.loc[relatorio_empresa['Aging Inclusão'].str.contains(
+    soma_aging_inclusao = len(relatorio.loc[relatorio['Aging Inclusão'].str.contains(
         '16 a 23 dias|24 a 31 dias|31 dias ou +')
         ])
     
@@ -95,45 +92,48 @@ def geracao_email(relatorio_empresa=relatorio_erro, empresa='GRUPO KONTIK', emai
     }
 
     # Corrigindo o loop para adicionar casos retornados
-    for row in range(len(relatorio_empresa)):
+    
+    for row in range(len(relatorio)):
         for handle in handles_resolvidos:
-            if str(handle) in str(relatorio_empresa['Handle PNR'][row]):
-                casos_retornados[empresa].append(relatorio_empresa['Localizadora'][row])
+            if str(handle) in str(relatorio['Handle PNR'][row]):
+                casos_retornados[empresa].append(relatorio['Localizadora'][row])
     
     casos_retornados[empresa] = list(set(casos_retornados[empresa]))
-    casos_formatados = ", ".join(casos_retornados[empresa])
+    casos_formatados = casos_retornados[empresa]
 
     # porcentagem categoria de erro qualidade de dados
-    porcentagem_qualidade_dados = (relatorio_empresa['CATEGORIA DE ERRO'] == 'Qualidade dos dados').sum() / total_casos * 100
-    porcentagem_sistemico = (relatorio_empresa['CATEGORIA DE ERRO'] == 'Sistêmico').sum() / total_casos * 100
+    porcentagem_qualidade_dados = (relatorio['CATEGORIA DE ERRO'] == 'Qualidade dos dados').sum() / total_casos * 100
+    porcentagem_sistemico = (relatorio['CATEGORIA DE ERRO'] == 'Sistêmico').sum() / total_casos * 100
 
     # Maiores Ofensores do Relatório - categoria
-    maior_ofensor = relatorio_empresa['CAMPO'].value_counts().head(1).index.tolist()[0]
+    maior_ofensor = relatorio['CAMPO'].value_counts().head(1).index.tolist()[0]
+
     # Maiores Ofensores do Relatório - quantidade
-    qtd_maior_ofensor = relatorio_empresa['CAMPO'].value_counts().head(1).values[0]
+    qtd_maior_ofensor = relatorio['CAMPO'].value_counts().head(1).values[0]
 
     # Maiores Ofensores do Relatório - OBT
-    obt_maior_ofensor = relatorio_empresa['OBTS'].value_counts().head(1).index.tolist()[0]
+    obt_maior_ofensor = relatorio['OBTS'].value_counts().head(1).index.tolist()[0]
+
     # Maiores Ofensores do Relatório - quantidade
-    qtd_obt_maior_ofensor = ((relatorio_empresa['OBTS'] == obt_maior_ofensor) & (relatorio_empresa['CAMPO'] == maior_ofensor)).sum()
+    qtd_obt_maior_ofensor = ((relatorio['OBTS'] == obt_maior_ofensor) & (relatorio['CAMPO'] == maior_ofensor)).sum()
 
     if empresa == 'KONTIK BUSINESS TRAVEL' or empresa == 'GRUPO KONTIK':
         # maior ofensor por obt
-        maior_ofensor_argo = relatorio_empresa.loc[relatorio_empresa['OBTS'] == 'ARGO(TMS)', 'CAMPO'].value_counts().head(1).index.tolist()[0]
-        qtd_maior_ofensor_argo = relatorio_empresa.loc[relatorio_empresa['OBTS'] == 'ARGO(TMS)', 'CAMPO'].value_counts().head(1).values[0]
+        maior_ofensor_argo = relatorio.loc[relatorio['OBTS'] == 'ARGO(TMS)', 'CAMPO'].value_counts().head(1).index.tolist()[0]
+        qtd_maior_ofensor_argo = relatorio.loc[relatorio['OBTS'] == 'ARGO(TMS)', 'CAMPO'].value_counts().head(1).values[0]
         porcentagem_maior_ofensor_argo = (qtd_maior_ofensor_argo / total_casos) * 100
 
-        maior_ofensor_sabre = relatorio_empresa.loc[relatorio_empresa['OBTS'] == 'SABRE', 'CAMPO'].value_counts().head(1).index.tolist()[0]
-        qtd_maior_ofensor_sabre = relatorio_empresa.loc[relatorio_empresa['OBTS'] == 'SABRE', 'CAMPO'].value_counts().head(1).values[0]
+        maior_ofensor_sabre = relatorio.loc[relatorio['OBTS'] == 'SABRE', 'CAMPO'].value_counts().head(1).index.tolist()[0]
+        qtd_maior_ofensor_sabre = relatorio.loc[relatorio['OBTS'] == 'SABRE', 'CAMPO'].value_counts().head(1).values[0]
         porcentagem_maior_ofensor_sabre = (qtd_maior_ofensor_sabre / total_casos) * 100
 
-        maior_ofensor_gover = relatorio_empresa.loc[relatorio_empresa['OBTS'] == 'GOVER', 'CAMPO'].value_counts().head(1).index.tolist()[0]
-        qtd_maior_ofensor_gover = relatorio_empresa.loc[relatorio_empresa['OBTS'] == 'GOVER', 'CAMPO'].value_counts().head(1).values[0]
+        maior_ofensor_gover = relatorio.loc[relatorio['OBTS'] == 'GOVER', 'CAMPO'].value_counts().head(1).index.tolist()[0]
+        qtd_maior_ofensor_gover = relatorio.loc[relatorio['OBTS'] == 'GOVER', 'CAMPO'].value_counts().head(1).values[0]
         porcentagem_maior_ofensor_gover = (qtd_maior_ofensor_gover / total_casos) * 100
 
         try:
-            maior_ofensor_lemontech = relatorio_empresa.loc[relatorio_empresa['OBTS'] == 'LEMONTECH', 'CAMPO'].value_counts().head(1).index.tolist()[0]
-            qtd_maior_ofensor_lemontech = relatorio_empresa.loc[relatorio_empresa['OBTS'] == 'LEMONTECH', 'CAMPO'].value_counts().head(1).values[0]
+            maior_ofensor_lemontech = relatorio.loc[relatorio['OBTS'] == 'LEMONTECH', 'CAMPO'].value_counts().head(1).index.tolist()[0]
+            qtd_maior_ofensor_lemontech = relatorio.loc[relatorio['OBTS'] == 'LEMONTECH', 'CAMPO'].value_counts().head(1).values[0]
             porcentagem_maior_ofensor_lemontech = (qtd_maior_ofensor_lemontech / total_casos) * 100
         except (IndexError, ZeroDivisionError):
             maior_ofensor_lemontech = '-'
@@ -177,8 +177,8 @@ def geracao_email(relatorio_empresa=relatorio_erro, empresa='GRUPO KONTIK', emai
                                 (terceiro_ofensor['obt'], terceiro_ofensor), 
                                 (quarto_ofensor['obt'], quarto_ofensor)]:
             try:                    
-                campo_ofensor['campo'] = relatorio_empresa.loc[relatorio_empresa['OBTS'] == obt, 'CAMPO'].value_counts().head(1).index[0]
-                campo_ofensor['qtd'] = relatorio_empresa.loc[(relatorio_empresa['OBTS'] == obt) & (relatorio_empresa['CAMPO'] == campo_ofensor['campo'])].shape[0]
+                campo_ofensor['campo'] = relatorio.loc[relatorio['OBTS'] == obt, 'CAMPO'].value_counts().head(1).index[0]
+                campo_ofensor['qtd'] = relatorio.loc[(relatorio['OBTS'] == obt) & (relatorio['CAMPO'] == campo_ofensor['campo'])].shape[0]
             except (IndexError):
                 campo_ofensor['campo'] = ''
                 campo_ofensor[ 'qtd'] = 0
@@ -198,134 +198,95 @@ def geracao_email(relatorio_empresa=relatorio_erro, empresa='GRUPO KONTIK', emai
     email.cc = ';'.join(email_copia)
 
     # Assunto
-    email.Subject = f'Análise de Erros - {datetime.now().strftime("%d/%m/%Y")} - {empresa}' 
+    email.Subject = f'📊 Análise Diária - Qualidade de Integração | {datetime.now().strftime("%d/%m/%Y")} | {empresa}' 
 
-    # Link do Power BI
-    link = 'https://app.powerbi.com/view?r=eyJrIjoiN2I3Zjk5ZDgtMzQ3ZS00ZDcwLWJlOTgtNTA2NGI2Y2RlOGRkIiwidCI6IjcwZGU1YWJlLTk2YzgtNDU2MS05Nzg0LThhYWQ1NTBlZDI2MCJ9'
+    # Links
+    link_bi = 'https://app.powerbi.com/view?r=eyJrIjoiMzM2NDgzZDEtNmE3Yi00MTMxLWEzNTMtYjM5NTUxYTcwZTMwIiwidCI6IjcwZGU1YWJlLTk2YzgtNDU2MS05Nzg0LThhYWQ1NTBlZDI2MCJ9'
+    link_sd = 'https://servicedesk.kontikspo.com.br/WorkOrder.do?woMode=newWO&reqTemplate=1505'
 
     # Corpo do email 1
     corpo_email_1 = f"""
-    <p>Olá, equipe!</p>
+    <style>
+        p,ul,li {{
+            font-size: 11pt;
+        }}
+    </style>
+    <p>Bom dia, pessoal!</p>
 
-    Espero que estejam bem, segue análise detalhada do Processado Erro com base no arquivo recebido hoje:
-    <p></p>
-    <br><br>
-    <p><em><strong style="background-color:yellow;color:red">PARA SOLICITAÇÕES AO SUPORTE BENNER, FAVOR ABRIR CHAMADO VIA SERVICE DESK: PORTAL BENNER -> CONTABILIZAÇÃO -> PENDENTES (PROCESSADO ERRO).</strong></em></p>
+    <p>Segue abaixo a análise detalhada do <strong>Processado Erro</strong>, com base no arquivo recebido hoje.</p>
+    
+    <p><strong>📌 Para solicitações ao Suporte Benner, é imprescindível a abertura de chamado via Service Desk <a href="{link_sd}" style="color: #007bff;">aqui</a> ou no caminho:
+    <br>➡️ Portal Benner → Contabilização → Pendentes (Processado Erro)</strong></p>
 
-    <br><strong>Link do Power BI:</strong> <a href="{link}">Clique aqui</a></br>
-    <p></p>
-    <strong><p><u>Pontos importantes:</u></p></strong>
-
-
-    <blockquote>
-        <p> <strong>1. Grupos empresariais que mais impactam:</strong> {top_5_grp_emp};</p>
-    </blockquote>
-
-    <blockquote>
-        <p> <strong>2. Aging Alteração acima de 15 Dias:</strong> {soma_aging_alteracao} casos, indicando a necessidade de atenção especial;
-        <p> <strong>3. Aging Inclusão acima de 15 Dias:</strong> {soma_aging_inclusao} casos, indicando a necessidade de atenção especial;
-        </p>
-    </blockquote>
-
-    <blockquote>
-        <p> <strong>4. Casos que retornaram:</strong> Identificamos {len(casos_retornados[empresa])}: {casos_formatados};</p>
-        </p>
-    </blockquote>
-
-    <blockquote>
-        <p> <strong>5. Porcentagem de Erros:</strong> {porcentagem_qualidade_dados:.2f}% de Qualidade dos Dados e {porcentagem_sistemico:.2f}% Sistêmico;
-        </p>
-    </blockquote>
+    <p>🔗<a href="{link_bi}" style="color: #007bff;"><strong>Clique aqui para acessar o Power Bi</strong></a></p>
+    
+    <p><strong>🔍 Pontos de Atenção:</strong></p>
+        <ul>
+            <li> <strong>Grupos empresariais que mais impactam:</strong> {top_5_grp_emp}</li>    
+            <li> <strong>Aging Alteração acima de 15 Dias:</strong> {soma_aging_alteracao} casos, indicando a necessidade de atenção especial</li>
+            <li> <strong>Aging Inclusão acima de 15 Dias:</strong> {soma_aging_inclusao} casos, indicando a necessidade de atenção especial</li>    
+            <li> <strong>Casos que retornaram:</strong> Identificamos {len(casos_retornados[empresa])}: {casos_formatados}</li>
+            <li> <strong>Porcentagem de Erros:</strong> 
+                <ul>    
+                    <li>{porcentagem_qualidade_dados:.2f}% – Qualidade dos Dados</li>
+                    <li>{porcentagem_sistemico:.2f}% – Sistêmico</li>
+                </ul>
+            </li>            
+        
     """
 
     if empresa == 'KONTIK BUSINESS TRAVEL' or empresa == 'GRUPO KONTIK':
+
         corpo_email_2 = f"""
-    <blockquote>
-        <p> <strong>6. IntegraTur:</strong> Relatório com vendas que falharam no processo automático de
-            integração e precisam ser contabilizadas manualmente no Portal Wes;</p>
-    </blockquote>
 
-    <blockquote>
-        <p> <strong>7. Relatório do Quero Passagem:</strong> Considere a coluna "A" para responsabilidade e a "B" para tipo
-            de erro, sendo que:</p>
-    </blockquote>
-
-    <blockquote>
-        <p>• Se correção, mudar o fornecedor para “Cia Rodoviaria” invés de "Quero Passagem" (Venda já contabilizada, apenas mudar o fornecedor) </p>
-    </blockquote>
-    <blockquote>
-        <p>• Se contabilização, seguir com contabilização manual </p>
-    </blockquote>
-    <blockquote>
-        <p>Obs.: O critério de pesquisa usado foi o campo de confirmação da Quero passagem e o rloc. </p>
-    </blockquote>
-
-    <br>
-    <br>
-    <br>
-  
-    <strong><u>Maiores Ofensores por OBT:</u></strong>
-
-    <blockquote>
-        <p> <strong>{primeiro_ofensor['obt']}:</strong> {primeiro_ofensor['qtd']} casos de {primeiro_ofensor['campo']} sendo {primeiro_ofensor['porcentagem']:.2f}% do total de casos</p>
-        <p> Causa: </p>
-    </blockquote>
-    <br>
-    <blockquote>
-        <p> <strong>{segundo_ofensor['obt']}:</strong> {segundo_ofensor['qtd']} casos de {segundo_ofensor['campo']} sendo {segundo_ofensor['porcentagem']:.2f}% do total de casos</p>
-        <p> Causa: </p>
-    </blockquote>
-    <br>
-    <blockquote>
-        <p> <strong>{terceiro_ofensor['obt']}:</strong> {terceiro_ofensor['qtd']} casos de {terceiro_ofensor['campo']} sendo {terceiro_ofensor['porcentagem']:.2f}% do total de casos</p>
-        <p> Causa: </p>
-    </blockquote>
-    <br>
-    <blockquote>
-        <p> <strong>{quarto_ofensor['obt']}:</strong> {quarto_ofensor['qtd']} casos de {quarto_ofensor['campo']} sendo {quarto_ofensor['porcentagem']:.2f}% do total de casos</p>
-        <p> Causa: </p>
-    </blockquote>
-
-    <br>
+            <li> <strong>Relatório do Quero Passagem:</strong> responsabilidade (coluna A) e Tipo de Erro (coluna B), sendo: 
+                <ul>
+                    <li>Fornecedor: alterar para o CNPJ da viação (já contabilizado, apenas ajustar o fornecedor)</li>      
+                    <li>Não contabilizada:</strong> seguir com a contabilização manual.</li>
+                </ul>
+            </li>
+        </ul>
+    
+    <p><strong>🔥 Maiores Ofensores por OBT:</strong></p>    
+        <ul>
+            <li><strong>{primeiro_ofensor['obt']}:</strong> {primeiro_ofensor['qtd']} casos de {primeiro_ofensor['campo']} sendo {primeiro_ofensor['porcentagem']:.2f}% do total de casos</li>           
+            <li><strong>{segundo_ofensor['obt']}:</strong> {segundo_ofensor['qtd']} casos de {segundo_ofensor['campo']} sendo {segundo_ofensor['porcentagem']:.2f}% do total de casos</li>            
+            <li><strong>{terceiro_ofensor['obt']}:</strong> {terceiro_ofensor['qtd']} casos de {terceiro_ofensor['campo']} sendo {terceiro_ofensor['porcentagem']:.2f}% do total de casos</li>               
+            <li><strong>{quarto_ofensor['obt']}:</strong> {quarto_ofensor['qtd']} casos de {quarto_ofensor['campo']} sendo {quarto_ofensor['porcentagem']:.2f}% do total de casos</li>
+        
     """
     
     corpo_email_3 = """
-
-
-
+    </ul>  
+    <p><strong>✅ Ações Recomendadas:</strong></p>
+        <ul>
+            <li><strong>Priorização:</strong> Foco na resolução dos casos relacionados aos grupos empresariais com maior impacto.</li>
+            <li><strong>Aging > 15 dias: </strong> Monitorar com atenção os aging mais antigos para evitar atrasos no processo.</li>   
+            <li><strong>Casos Recorrentes:</strong> Investigar a fundo quaisquer casos reincidentes para evitar novas ocorrências.</li>    
+            <li><strong>Power BI:</strong> Utilize o painel para análises visuais complementares e tomada de decisão.</li>    
+        </ul>
+    <br>
+    <p><strong>📣 Lembrete importante:</strong><br> Em caso de dúvidas, dificuldades ou necessidade de apoio, <strong>abra um chamado conforme instruções acima</strong>. 
+        Isso garante um atendimento ágil e rastreável por parte da equipe de suporte.</p>
+    <p>Ficamos à disposição para quaisquer esclarecimentos ou ações adicionais necessárias.</p>
     <br>
     <br>
-    <br>
-   
-    <strong><u>Ações Recomendadas:</u></strong>
-
-    <blockquote>
-        <p><strong>Priorização:</strong> Recomendo priorizar a resolução dos casos nos grupos empresariais de maior impacto
-            para otimizar o processo.</p>
-    </blockquote>
-    <blockquote>
-        <p><strong>Aging Superior a 15 Dias:</strong> Uma atenção especial deve ser dada aos casos com Aging acima de 15
-            dias para evitar possíveis atrasos.</p>
-    </blockquote>
-    <blockquote>
-        <p><strong>Casos Recorrentes:</strong> Os casos que reapareceram merecem uma investigação mais aprofundada para
-            evitar recorrências futuras.</p>
-    </blockquote>
-    <blockquote>
-        <p><strong>Power BI:</strong> Utilize o link fornecido para acessar o Power BI e obter insights visuais adicionais.
-        </p>
-    </blockquote>
-
-    <p>Ficamos à disposição para discutir qualquer ação adicional que possa ser necessária para abordar esses pontos.</p>
-
-    <p></p>
-    <p></p>
     """
 
+    # Assinatura do email
+    assinatura_nome = "Igor F. Santos (igorsantos@kontik.com.br)"
+
+    assinatura_path = os.path.expandvars(rf"%APPDATA%\Microsoft\Signatures\{assinatura_nome}.htm")
+    
+
+    with open(assinatura_path, 'r', encoding='latin-1') as f:
+        assinatura_html = f.read()
+
+    # Definição de corpo dos e-mails
     if empresa == 'KONTIK BUSINESS TRAVEL' or empresa == 'GRUPO KONTIK':
-        email.HTMLBody = corpo_email_1 + corpo_email_2 + corpo_email_3
+        email.HTMLBody = corpo_email_1 + corpo_email_2 + corpo_email_3 + assinatura_html
     else:
-        email.HTMLBody = corpo_email_1 + corpo_email_3
+        email.HTMLBody = corpo_email_1 + corpo_email_3 + assinatura_html
 
     # Anexos
     dashboard_pdf = r'C:\Users\igorsantos\Desktop\DOCS\data-analysis-python\PROCESSADO ERRO\PDFs\Relatorio - ' + \
@@ -333,19 +294,19 @@ def geracao_email(relatorio_empresa=relatorio_erro, empresa='GRUPO KONTIK', emai
     
     quero_passagem = r'C:\Users\igorsantos\Desktop\DOCS\data-analysis-python\PROCESSADO ERRO\Quero Passagem.xlsx'
     
-    integra_tour = r'C:\Users\igorsantos\Desktop\DOCS\data-analysis-python\PROCESSADO ERRO\Contabilização Manual - IntegraTur.xlsx'
-       
-    relatorio_empresa = r'C:\Users\igorsantos\Desktop\DOCS\data-analysis-python\PROCESSADO ERRO\EMPRESAS\Relatorio - ' + \
+    # integra_tour = r'C:\Users\igorsantos\Desktop\DOCS\data-analysis-python\PROCESSADO ERRO\Contabilização Manual - IntegraTur.xlsx'       
+    relatorio = r'C:\Users\igorsantos\Desktop\DOCS\data-analysis-python\PROCESSADO ERRO\EMPRESAS\Relatorio - ' + \
     f'{empresa}.xlsx'
 
     relatorio_dash = r'C:\Users\igorsantos\Desktop\DOCS\data-analysis-python\PROCESSADO ERRO\Relatorio - Dash.xlsx'
 
-    email.Attachments.Add(relatorio_empresa)
-    # email.Attachments.Add(dashboard_pdf)
+    email.Attachments.Add(relatorio)
 
+    # email.Attachments.Add(dashboard_pdf)
     if empresa == 'GRUPO KONTIK' or empresa == 'KONTIK BUSINESS TRAVEL':
         email.Attachments.Add(quero_passagem)
-        email.Attachments.Add(integra_tour)
+        # email.Attachments.Add(dashboard_pdf)
+        # email.Attachments.Add(integra_tour)
     
     if empresa == 'GRUPO KONTIK':
         email.Attachments.Remove(1)
@@ -359,12 +320,11 @@ def geracao_email(relatorio_empresa=relatorio_erro, empresa='GRUPO KONTIK', emai
         email.Delete()
     print(f'E-mail da empresa {empresa} criado com sucesso!')
 
-
 geracao_email()
 geracao_email(relatorio_erro_zupper, 'ZUPPER VIAGENS', emails_zupper['envio'], emails_zupper['copia'])
 geracao_email(relatorio_erro_corp, 'KONTIK BUSINESS TRAVEL', emails_corp['envio'],emails_corp['copia'])
 geracao_email(relatorio_erro_kontrip,'KONTRIP VIAGENS', emails_kontrip['envio'], emails_kontrip['copia'])
-# geracao_email(relatorio_erro_inovents, 'INOVENTS', emails_inovents['envio'],emails_inovents['copia'])
+geracao_email(relatorio_erro_inovents, 'INOVENTS', emails_inovents['envio'],emails_inovents['copia'])
+# geracao_email(relatorio_erro_grpktk, 'GRUPO KONTIK', emails_grpkontik['envio'], emails_grpkontik['copia'])
 
-
-print('\033[1;32m\n-Emails criado com sucesso!\033[m')
+print('\033[1;32m-Emails criado com sucesso!\033[m')

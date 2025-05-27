@@ -2,7 +2,7 @@ import pandas as pd
 from datetime import datetime
 
 # Caminho dos arquivos
-data_path = 'data-analysis-python/PROCESSADO ERRO/'
+data_path = 'data-analysis-python/PROCESSADO ERRO'
 
 # Leitura dos arquivos
 relatorio_dash = pd.read_excel(data_path + 'Relatorio - Dash.xlsx', sheet_name='Processado Erro - BASE')
@@ -31,7 +31,7 @@ base_novo.loc[base_novo['Handle ACC'].isin(base_resolvidos['Handle ACC']), 'Stat
 
 # Identificar novos registros
 novos_registros = base_novo[base_novo['Status'] == 'Novo'].copy()
-print(f'\033[94m-Casos novos:\033[0m {len(novos_registros)}')
+print(f'\033[94m- Casos novos:\033[0m {len(novos_registros)}')
 
 # Atualiza status para "Em Andamento" e adiciona na base_em_andamento
 novos_registros['Status'] = 'Em Andamento'
@@ -47,8 +47,8 @@ base_em_andamento.drop(columns=['Status_novo'], inplace=True)
 registros_resolvidos = base_em_andamento[base_em_andamento['Status'] == 'Resolvido'].copy()
 registros_resolvidos['Data de Conclusão'] = data_atual
 
-print(f'\033[94m-Total Processado Erro Hoje:\033[0m {len(relatorio_dash)}')
-print(f'\033[94m-Casos resolvidos hoje:\033[0m {len(registros_resolvidos)}')
+print(f'\033[94m- Total Processado Erro Hoje:\033[0m {len(relatorio_dash)}')
+print(f'\033[94m- Casos resolvidos hoje:\033[0m {len(registros_resolvidos)}')
 
 # Mover registros resolvidos para base_resolvidos
 base_resolvidos = pd.concat([base_resolvidos, registros_resolvidos], ignore_index=True)
@@ -66,4 +66,4 @@ with pd.ExcelWriter(output_path, engine='openpyxl', mode='a', if_sheet_exists='o
     base_em_andamento.to_excel(writer, sheet_name='Benner - Processado Erro 0', index=False)
     base_resolvidos.to_excel(writer, sheet_name='Resolvidos', index=False)
 
-print(f"\033[92m\n-O arquivo foi salvo com sucesso em:\033[0m {output_path}")
+print(f"\033[92m\n- O arquivo foi salvo com sucesso em:\033[0m {output_path}")
