@@ -27,73 +27,80 @@ Este repositório contém scripts Python para análise, categorização e proces
 * 📎 Anexa relatórios e outros documentos relevantes.
 * 📤 Envia os e-mails para listas predefinidas de destinatários.
 
+### 4. `pokemon_api_populate.py` 🎮
+
+* 🎯 Integra com a API pública do Pokémon para popular um banco de dados PostgreSQL com dados estruturados.
+* 🗃️ Cria e mantém as tabelas de `pokemons`, `tipos`, `regioes`, `imagens` e `evolucoes`.
+* 🔄 Atualiza informações de pokémons, suas evoluções, tipos e regiões de forma automatizada.
+* 🖼️ Gerencia URLs das imagens oficiais para consulta e uso em visualizações BI.
+* 🚀 Exemplo prático de automação de coleta e transformação de dados para análise e dashboards.
+
+### 5. `ecommerce_data_generator.py` 🛒
+
+* 📦 Gera dados fictícios para um e-commerce focado em serviços de TI, incluindo vendas, clientes, produtos e vendedores.
+* 🔢 Popula uma base PostgreSQL com ao menos 1000 registros, permitindo testes, simulações e análises.
+* 📊 Auxilia no desenvolvimento de relatórios, dashboards e estudos preditivos baseados em dados realistas.
+
 ## 📚 Bibliotecas Utilizadas
 
 Os scripts utilizam as seguintes bibliotecas Python:
 
-* 🐼 `pandas`: Para manipulação e análise de dados.
-* 📂 `openpyxl`: Para leitura e escrita de arquivos Excel no formato `.xlsx`.
-* 📑 `xlrd`: Para leitura de arquivos `.xls` (necessário para conversão para `.xlsx`).
-* 📧 `win32com.client`: Para integração com o Microsoft Outlook e envio automatizado de e-mails.
-* ⏳ `datetime`: Para manipulação de datas nos relatórios.
-* 🗂️ `os`: Para manipulação de diretórios e arquivos.
+* 🐼 `pandas`
+* 📂 `openpyxl`
+* 📑 `xlrd`
+* 📧 `win32com.client`
+* ⏳ `datetime`
+* 🗂️ `os`
+* 🌐 `requests`
+* 🐍 `psycopg2`
+* ⏲️ `time`
 
 ## 🔧 Requisitos
 
-Para rodar os scripts, instale as bibliotecas necessárias:
+Para instalar as bibliotecas necessárias, rode:
 
-```bash
-pip install pandas openpyxl xlrd pywin32
-```
+pip install pandas openpyxl xlrd pywin32 requests psycopg2-binary
+
+.
 
 ## ▶️ Como Usar
 
 1. **Processamento de Erros:**
 
-   ```bash
-   python processamento_erros.py
-   ```
-
-   Esse script irá converter arquivos, processar os dados e gerar relatórios segmentados.
+   * python processamento_erros.py
 2. **Atualização de Status:**
 
-   ```bash
-   python atualizacao_status.py
-   ```
-
-   Ele atualiza o status dos registros de erro e salva os dados atualizados no Excel.
+   * python atualizacao_status.py
 3. **Envio de Relatórios:**
 
-   ```bash
-   python envio_relatorios.py
-   ```
+   * python envio_relatorios.py
+4. **População da base Pokémon:**
 
-   O script gera e-mails formatados com análises e relatórios anexados.
+   * python pokemon_api_populate.py
+5. **Geração de dados fictícios para e-commerce:**
+   * python pokemon_api_populate.py
 
-## 📂 Estrutura de Diretórios
+## 📂 Estrutura do Repositório
 
-```
-/
-|-- data-analysis-python/
-|   |-- PROCESSADO ERRO/
-|   |   |-- Base.xlsx
-|   |   |-- Relatorio - Dash.xlsx
-|   |   |-- EMPRESAS/
-|   |   |   |-- Relatorio - ZUPPER VIAGENS.xlsx
-|   |   |   |-- Relatorio - KONTIK BUSINESS TRAVEL.xlsx
-|   |   |   |-- Relatorio - KONTRIP VIAGENS.xlsx
-|   |   |   |-- Relatorio - GRUPO KONTIK.xlsx
-|-- processamento_erros.py
-|-- atualizacao_status.py
-|-- envio_relatorios.py
-```
+   |-- data-analysis-python/
+   |   |-- PROCESSADO ERRO/
+   |   |   |-- Base.xlsx
+   |   |   |-- Relatorio - Dash.xlsx
+   |   |   |-- EMPRESAS/
+   |   |       |-- Relatorio - ZUPPER VIAGENS.xlsx
+   |   |       |-- Relatorio - KONTIK BUSINESS TRAVEL.xlsx
+   |   |       |-- Relatorio - KONTRIP VIAGENS.xlsx
+   |   |       |-- Relatorio - GRUPO KONTIK.xlsx
+   |-- processamento_erros.py
+   |-- atualizacao_status.py
+   |-- envio_relatorios.py
+   |-- pokemon_api_populate.py
+   |-- ecommerce_data_generator.py
 
 ## 🤝 Contribuição
 
-Se quiser contribuir, sinta-se à vontade para abrir um pull request com melhorias ou correções.
+   Contribuições são muito bem-vindas! Abra um pull request para melhorias, correções ou sugestões.
 
 ## ⚖️ Licença
 
-Este projeto está sob a licença MIT. Consulte o arquivo LICENSE para mais detalhes.
-
-🔎 **Visualização dos dados no Power BI disponível!** 📊
+   Este projeto está sob a licença MIT. Consulte o arquivo LICENSE para mais detalhes.
