@@ -278,7 +278,6 @@ def geracao_email(relatorio=relatorio_erro, empresa='GRUPO KONTIK', email_envio=
 
     assinatura_path = os.path.expandvars(rf"%APPDATA%\Microsoft\Signatures\{assinatura_nome}.htm")
     
-
     with open(assinatura_path, 'r', encoding='latin-1') as f:
         assinatura_html = f.read()
 
@@ -305,7 +304,7 @@ def geracao_email(relatorio=relatorio_erro, empresa='GRUPO KONTIK', email_envio=
     # email.Attachments.Add(dashboard_pdf)
     if empresa == 'GRUPO KONTIK' or empresa == 'KONTIK BUSINESS TRAVEL':
         email.Attachments.Add(quero_passagem)
-        # email.Attachments.Add(dashboard_pdf)
+        email.Attachments.Add(dashboard_pdf)
         # email.Attachments.Add(integra_tour)
     
     if empresa == 'GRUPO KONTIK':

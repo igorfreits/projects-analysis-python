@@ -2,7 +2,7 @@ import pandas as pd
 from datetime import datetime
 
 # Caminho dos arquivos
-data_path = 'data-analysis-python/PROCESSADO ERRO'
+data_path = 'data-analysis-python/PROCESSADO ERRO/'
 
 # Leitura dos arquivos
 relatorio_dash = pd.read_excel(data_path + 'Relatorio - Dash.xlsx', sheet_name='Processado Erro - BASE')
