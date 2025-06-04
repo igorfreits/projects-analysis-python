@@ -14,53 +14,59 @@ relatorio_erro_grpktk = pd.read_excel('data-analysis-python/PROCESSADO ERRO/EMPR
 novo_arquivo_resolvido = pd.read_excel('data-analysis-python/PROCESSADO ERRO/Base.xlsx', sheet_name='Novo Arquivo')
 base_resolvido = pd.read_excel('data-analysis-python/PROCESSADO ERRO/Base.xlsx', sheet_name='Resolvidos')
 
-# Emails
+# Empresa - KONTIK BUSINESS TRAVEL
 emails_corp = {
     'envio': [
-        'wagneyoliveira@kontik.com.br','yurirodrigues@kontik.com.br',
-        'wellingtonribeiro@kontik.com.br','michellysilva@kontik.com.br','eduardomanso@kontik.com.br',
-        'vanessadias@kontik.com.br','giselecarmo@kontik.com.br','nucleonabr@kontik.com.br','cartaoaereo@kontik.com.br','jackelinenascimento@kontik.com.br',
-        'andreajorge@kontik.com.br','adailtonsantos@kontik.com.br','reinildosantos@kontik.com.br',
-        'andreiaalves@kontik.com.br','herbertsantana@kontik.com.br','camilasilva@kontik.com.br','robertobento@kontik.com.br','jacquelinesantos@kontik.com.br',
-        'anafeitosa@kontik.com.br','mylenasilva@kontik.com.br','samsung@kontik.com.br','giseledenck@kontik.com.br','leticiapinheiro@kontik.com.br','andressasilva@kontik.com.br'
+        # Lista de emails para envio - KONTIK BUSINESS TRAVEL
     ],    
     'copia': [
-        'alexandrecastro@kontik.com.br','lanatakuma@kontik.com.br','thiagobatello@kontik.com.br','danielacoelho@kontik.com.br',
-        'rafaelzizzi@kontik.com.br','luisvasquez@kontik.com.br','pliniocarvalho@kontik.com.br'
-
+        # Lista de emails para cópia - KONTIK BUSINESS TRAVEL
         ]}
 
 #Empresa - ZUPPER VIAGENS
 emails_zupper = {
     'envio': [
-        'higorlima@zupper.com.br'],
+        # Lista de emails para envio - ZUPPER VIAGENS
+    ],
     'copia': [
-        'angelasilva@zupper.com.br','pliniocarvalho@kontik.com.br']}
+        # Lista de emails para cópia - ZUPPER VIAGENS
+        ]}
 
 # Empresa - KONTRIP VIAGENS
 emails_kontrip = {
     'envio': [
-        'laylaoliveira@kontrip.com.br', 'emillysantos@kontrip.com.br'],
+        # Lista de emails para envio - KONTRIP VIAGENS
+        ],
     'copia': [
-        'alexandreberbel@kontrip.com.br','pliniocarvalho@kontik.com.br']}
+        # Lista de emails para cópia - KONTRIP VIAGENS
+        ]}
 
 # Empresa - GRUPO KONTIK
 emails_grpkontik = {
-    'envio' : ['mylenasilva@kontik.com.br','icaroxavier@kontik.com.br',
-            'conciliacao_aereo@kontik.com.br','suporte.benner@kontik.com.br','thiagobatello@kontik.com.br',
-            'victorbazogli@kontik.com.br','wellingtonribeiro@kontik.com.br'],
-    'copia': ['biancasantos@kontik.com.br','luisvasquez@kontik.com.br',
-              'pliniocarvalho@kontik.com.br', 'williancardoso@kontik.com.br']}
+    'envio' : [
+        # Lista de emails para envio - GRUPO KONTIK
+            ],
+    'copia': [
+        # Lista de emails para cópia - GRUPO KONTIK
+              ]}
 
 # Empresa - KTK
 emails_ktk = {
-    'envio' : ['mariatrindade@kontik.com.br'],
-    'copia': ['girlacarneiro@kontik.com.br','pliniocarvalho@kontik.com.br']}
+    'envio' : [
+        # Lista de emails para envio - KTK
+        ],
+    'copia': [
+        # Lista de emails para cópia - KTK
+        ]}
 
 # Empresa - INOVENTS
 emails_inovents = {
-    'envio' : ['mariatrindade@kontik.com.br','flaviomazzola@inovents.com.br'],
-    'copia': ['alexandrecastro@kontik.com.br','administrativo@inovents.com.br','lucianagarcez@inovents.com.br','pliniocarvalho@kontik.com.br']}
+    'envio' : [
+        # Lista de emails para envio - INOVENTS
+        ],
+    'copia': [
+        # Lista de emails para cópia - INOVENTS
+        ]}
 
 
 def geracao_email(relatorio=relatorio_erro, empresa='GRUPO KONTIK', email_envio=emails_grpkontik['envio'], email_copia=emails_grpkontik['copia']):
@@ -201,8 +207,8 @@ def geracao_email(relatorio=relatorio_erro, empresa='GRUPO KONTIK', email_envio=
     email.Subject = f'📊 Análise Diária - Qualidade de Integração | {datetime.now().strftime("%d/%m/%Y")} | {empresa}' 
 
     # Links
-    link_bi = 'https://app.powerbi.com/view?r=eyJrIjoiMzM2NDgzZDEtNmE3Yi00MTMxLWEzNTMtYjM5NTUxYTcwZTMwIiwidCI6IjcwZGU1YWJlLTk2YzgtNDU2MS05Nzg0LThhYWQ1NTBlZDI2MCJ9'
-    link_sd = 'https://servicedesk.kontikspo.com.br/WorkOrder.do?woMode=newWO&reqTemplate=1505'
+    link_sd = 'Inserir link do Service Desk aqui'
+    link_bi = 'Inserir link do Power BI aqui'
 
     # Corpo do email 1
     corpo_email_1 = f"""

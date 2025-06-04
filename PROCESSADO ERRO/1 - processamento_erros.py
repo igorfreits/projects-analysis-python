@@ -355,9 +355,7 @@ processado_erro.loc[
 
 # Realocação - Central de Emissão (Markup) por Agente Emissão
 agentes = [
-    'Gessiane Santos Silva', 'Clayton Alves de Rezende', 'Icaro Gabriel Pimentel Gomes Xavier', 
-    'Carlos Alberto Theodoro da Silva', 'Mylena Mendonca Santos da Silva', 'Wellington Ribeiro da Silva', 
-    'Itamar de Souza', 'Flavia Constanzi do Nascimento', 'Ana Paula Costa Feitosa', 'Elisete Ferraz de Almeida','Beatrys Ferreira Rocha'
+    # Adicione os nomes dos agentes aqui
 ]
 
 processado_erro.loc[
