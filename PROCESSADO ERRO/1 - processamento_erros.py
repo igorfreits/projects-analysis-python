@@ -3,12 +3,10 @@ from datetime import datetime
 from openpyxl.styles import Font, PatternFill,Alignment
 from openpyxl import load_workbook
 import os
+import numpy as np
+import re
  
 # Função para converter .xls para .xlsx
-import pandas as pd
-import os
-
-
 def converter_xls_para_xlsx(caminho_arquivo):
     if not caminho_arquivo or not isinstance(caminho_arquivo, str):
         raise ValueError("Caminho do arquivo inválido.")
@@ -34,7 +32,9 @@ def converter_xls_para_xlsx(caminho_arquivo):
 
 
 
-# Caminho dos arquivos
+# ---Caminho dos arquivos---
+
+# Caminho do diretório onde os arquivos estão localizados
 data_path = 'data-analysis-python/PROCESSADO ERRO/'
 
 # Caminho do arquivo original
@@ -44,7 +44,7 @@ arquivo_xls = data_path + 'Benner - Processado Erro 0.xls'
 if os.path.exists(arquivo_xls):
     arquivo_xls = converter_xls_para_xlsx(arquivo_xls)
 
-# ARQUIVOS
+# Arquivos Excel
 processado_erro = pd.read_excel(arquivo_xls)
 realocacao = pd.read_excel(data_path + 'Realocacao.xlsx')
  
@@ -75,39 +75,39 @@ processado_erro['RESPONSÁVEL'] = 'Operações - CORP'
 # Preenchimento de valores nulos
 processado_erro['Mensagem Erro'].fillna(
     'Erro não localizado', inplace=True)
- 
 processado_erro.fillna('-', inplace=True)
   
-# Inserção dos OBTS
+# Tratamento da coluna 'OBT'
 processado_erro['OBTS'] = processado_erro['OBT']
 processado_erro['OBTS'] = processado_erro['OBTS'].str.replace(
     'TMS', 'ARGO(TMS)')
  
+# Aplicação da máscara para substituir valores na coluna 'OBTS' - ZUPPER
 mask_zupper = (processado_erro['Canal de Vendas'].str.contains('ZUPPER', case=False) |
                processado_erro['Grupo Empresarial'].str.contains('Zupper', case=False))
- 
 processado_erro['OBTS'] = processado_erro['OBTS'].mask(mask_zupper, 'ZUPPER')
  
+# Aplicação da máscara para substituir valores na coluna 'OBTS' - KONTRIP
 mask_kontrip = processado_erro['Canal de Vendas'].str.contains(
     'KONTRIP', case=False)
 processado_erro['OBTS'] = processado_erro['OBTS'].mask(mask_kontrip, 'KONTRIP')
  
+# Tratamento de colunas - formatação de strings
 processado_erro['Mensagem Erro'] = processado_erro['Mensagem Erro'].astype(str)
-parametros['Mensagem'] = parametros['Mensagem'].astype(str)
+# parametros['Mensagem'] = parametros['Mensagem'].astype(str)
  
-# Atribuição de campos, origem do erro e tipo de erro
-for row in range(len(processado_erro)):
-    for row2 in range(len(parametros)):
-        if parametros['Mensagem'][row2] in processado_erro['Mensagem Erro'][row]:
-            processado_erro.at[row, 'CAMPO'] = parametros.at[row2, 'Campo']
-            processado_erro.at[row, 'ORIGEM DO ERRO'] = parametros.at[row2, 'Origem do Erro']
-            processado_erro.at[row, 'TIPO DE ERRO'] = parametros.at[row2, 'Tipo de Erro']
-            processado_erro.at[row, 'CATEGORIA DE ERRO'] = parametros.at[row2, 'Categoria de Erro']
+# # Atribuição de campos, origem do erro e tipo de erro
+# for row in range(len(processado_erro)):
+#     for row2 in range(len(parametros)):
+#         if parametros['Mensagem'][row2] in processado_erro['Mensagem Erro'][row]:
+#             processado_erro.at[row, 'CAMPO'] = parametros.at[row2, 'Campo']
+#             processado_erro.at[row, 'ORIGEM DO ERRO'] = parametros.at[row2, 'Origem do Erro']
+#             processado_erro.at[row, 'TIPO DE ERRO'] = parametros.at[row2, 'Tipo de Erro']
+#             processado_erro.at[row, 'CATEGORIA DE ERRO'] = parametros.at[row2, 'Categoria de Erro']
 
-# Formatação de Datas
+#---Formatação de datas e aging---
 processado_erro['Aging Inclusão'] = (
     datetime.now() - pd.to_datetime(processado_erro['Data Inclusão'].str[:10], format='%d/%m/%Y')).dt.days
-
 processado_erro['Aging Alteração'] = (
     datetime.now() - pd.to_datetime(processado_erro['Data Alteração'].str[:10], format='%d/%m/%Y')).dt.days
 
@@ -121,6 +121,7 @@ processado_erro.loc[processado_erro['CAMPO'].str.contains('Bilhete duplicado'), 
     datetime.now() - pd.to_datetime(processado_erro['Data Alteração'].str[:10], format='%d/%m/%Y')
 ).dt.days
 
+# Preenchimento de data de emissão, se estiver vazia
 processado_erro.loc[processado_erro['Data Emissão'].str.contains(
     '-'), 'Data Emissão'] = processado_erro['Data Inclusão']
  
@@ -128,38 +129,94 @@ processado_erro.loc[processado_erro['Data Emissão'].str.contains(
 limites = [0, 3, 6, 9, 16, 24, 31, float('inf')]
 rotulos = ['0 a 02 dias', '03 a 05 dias', '06 a 08 dias', '09 a 15 dias', '16 a 23 dias', '24 a 31 dias', '31 dias ou +']
  
+# Aplicar categorização de dias parados
 processado_erro['Aging Inclusão'] = pd.cut(processado_erro['Aging Inclusão'], bins=limites, labels=rotulos, right=False, include_lowest=True)
 processado_erro['Aging Alteração'] = pd.cut(processado_erro['Aging Alteração'], bins=limites, labels=rotulos, right=False, include_lowest=True)
 
-#formatação de datas
 # Aplicar formatação com dayfirst=True para ajustar o formato de data "DD/MM/AAAA HH:MM"
 processado_erro['Data Inclusão'] = pd.to_datetime(processado_erro['Data Inclusão'], format='mixed', dayfirst=True, errors='coerce')
 processado_erro['Data Emissão'] = pd.to_datetime(processado_erro['Data Emissão'], format='mixed', dayfirst=True, errors='coerce')
 processado_erro['Data Alteração'] = pd.to_datetime(processado_erro['Data Alteração'], format='mixed', dayfirst=True, errors='coerce')
 
-# Atribuição - Fornecedor
-processado_erro.loc[processado_erro['Mensagem Erro'].str.contains('Fornecedor não preenchido', case=False), 
-                    ['CAMPO', 'ORIGEM DO ERRO', 'TIPO DE ERRO']] = ['Falta de Fornecedor', 'Campo Fornecedor', 'Dados do Fornecedor']
-
 # Atribuição - de responsáveis
-for row in range(len(processado_erro)):
-    for row2 in range(len(info)):
-        if info['CAMPO_INFO'][row2] in processado_erro['CAMPO'][row]:
-            processado_erro.at[row, 'RESPONSÁVEL'] = info.at[row2, 'RESPONSÁVEL_INFO']
+# for row in range(len(processado_erro)):
+#     for row2 in range(len(info)):
+#         if info['CAMPO_INFO'][row2] in processado_erro['CAMPO'][row]:
+#             processado_erro.at[row, 'RESPONSÁVEL'] = info.at[row2, 'RESPONSÁVEL_INFO']
 
 
-# Preenchimento de valores nulos(Status Requisição)
-condition = processado_erro['Status Requisicao'].str.contains('-', na=False)
-processado_erro.loc[condition, 'Status Requisicao'] = 'OFF LINE'
- 
-# Preenchimento de vendas manuais
-condition = processado_erro['OBT'].str.contains('MANUAL', na=False)
-processado_erro.loc[condition, 'Status Requisicao'] = 'OFF LINE'
+# Tratamento de Status Requisição
+processado_erro['Status Requisicao'] = np.where(processado_erro['Status Requisicao'].str.contains('-', na=False), 'OFF LINE', processado_erro['Status Requisicao'])
+processado_erro['Status Requisicao'] = np.where(processado_erro['OBT'].str.contains('MANUAL', na=False), 'OFF LINE', processado_erro['Status Requisicao'])
+
+
+#---Tratamento de Erros - Padrões---
 
 # Preenchimento de valores repetidos - falta de informação gerencial
-processado_erro.loc[processado_erro['Mensagem Erro'].str.count('não preenchid')
-                    > 1, 'ORIGEM DO ERRO'] = 'Mais de um campo não preenchido'
+multiplos_campos = processado_erro['Mensagem Erro'].str.lower().str.count('não preenchid') > 1
+processado_erro.loc[multiplos_campos, ['CAMPO', 'ORIGEM DO ERRO', 'TIPO DE ERRO', 'CATEGORIA DE ERRO']] = ['Mais de um campo não preenchido','Falta de informação Gerencial','Dados do Fornecedor','Qualidade dos dados']
 
+# Para um único campo não preenchido – extrai o nome do campo
+unico_campo = processado_erro['Mensagem Erro'].str.lower().str.count('não preenchid') == 1
+
+# Extrai o nome do campo antes de "não preenchido" e remove espaços
+campo_extraido = processado_erro.loc[unico_campo, 'Mensagem Erro'].str.extract(
+    r'^(.*?)\s*não preenchid[ao]', expand=False, flags=re.IGNORECASE
+).str.strip()
+
+# Cria o DataFrame com os valores fixos + o campo extraído
+valores = pd.DataFrame({
+    'CAMPO': campo_extraido,
+    'ORIGEM DO ERRO': 'Falta de informação Gerencial',
+    'TIPO DE ERRO': 'Dados do Fornecedor',
+    'CATEGORIA DE ERRO': 'Qualidade dos dados'
+}, index=campo_extraido.index)
+
+processado_erro.loc[unico_campo, ['CAMPO', 'ORIGEM DO ERRO', 'TIPO DE ERRO', 'CATEGORIA DE ERRO']] = valores
+
+# Falta de Fornecedor
+processado_erro.loc[processado_erro['Mensagem Erro'].str.contains('Fornecedor não preenchido!', case=False),
+                    ['CAMPO', 'ORIGEM DO ERRO', 'TIPO DE ERRO', 'CATEGORIA DE ERRO']] = ['Falta de Fornecedor', 'Campo Fornecedor', 'Dados do Fornecedor', 'Qualidade dos dados']
+
+# PNR duplicado
+processado_erro.loc[processado_erro['Mensagem Erro'].str.contains('Pnr já existente', case=False),
+                    ['CAMPO', 'ORIGEM DO ERRO', 'TIPO DE ERRO', 'CATEGORIA DE ERRO']] = ['Duplicidade de RLOC', 'Campo RLOC', 'Duplicidade de Contabilização', 'Qualidade dos dados']
+
+# Falta de status no trecho
+processado_erro.loc[processado_erro['Mensagem Erro'].str.contains('Falta informar o status no trecho', case=False),
+                    ['CAMPO', 'ORIGEM DO ERRO', 'TIPO DE ERRO', 'CATEGORIA DE ERRO']] = ['Falta informação nos trechos', 'Status do trecho', 'Dados do Fornecedor', 'Qualidade dos dados']
+
+# Duplicidade de Bilhete
+processado_erro.loc[processado_erro['Mensagem Erro'].str.contains('Verificação de bilhetes: Bilhete', case=False),
+                    ['CAMPO', 'ORIGEM DO ERRO', 'TIPO DE ERRO', 'CATEGORIA DE ERRO']] = ['Bilhete duplicado', 'Bilhete Já Contabilizado', 'Duplicidade de Contabilização', 'Qualidade dos dados']
+
+# Sem permissão para tipo de pagamento/recebimento
+processado_erro.loc[processado_erro['Mensagem Erro'].str.contains('Este cliente não possui permissão para usar este tipo de pagamento', case=False),
+                    ['CAMPO', 'ORIGEM DO ERRO', 'TIPO DE ERRO', 'CATEGORIA DE ERRO']] = ['Pagamento não permitido para cobrança', 'Forma PG. e REC.', 'Dados do Fornecedor', 'Qualidade dos dados']
+
+# Contrato de fornecedor/cliente não encontrado
+processado_erro.loc[processado_erro['Mensagem Erro'].str.contains('Não foi possível encontrar um contrato válido para o fornecedor', case=False) |
+                    processado_erro['Mensagem Erro'].str.contains('Necessário cadastrar um contrato para o cliente', case=False),
+                    ['CAMPO', 'ORIGEM DO ERRO', 'TIPO DE ERRO', 'CATEGORIA DE ERRO']] = ['Contrato de fornecedor', 'Análise Cadastro', 'Dados do Fornecedor', 'Qualidade dos dados']
+
+# Forma de pagamento indevida
+processado_erro.loc[processado_erro['Mensagem Erro'].str.contains('Módulo Operações ', case=False),
+                    ['CAMPO', 'ORIGEM DO ERRO', 'TIPO DE ERRO', 'CATEGORIA DE ERRO']] = ['Forma de Pagamento indevida', 'Forma PG. e REC.', 'Dados do Fornecedor', 'Qualidade dos dados']
+
+# Conciliado BSP
+processado_erro.loc[processado_erro['Mensagem Erro'].str.contains(' Esta accounting está conciliada no BSP. Bilhete', case=False),
+                    ['CAMPO', 'ORIGEM DO ERRO', 'TIPO DE ERRO', 'CATEGORIA DE ERRO']] = ['Bilhete conciliado', 'Concilização eletrônica Aérea', 'Edição não Permitida', 'Sistêmico']
+
+# Controle de Comissão pós paga
+processado_erro.loc[processado_erro['Mensagem Erro'].str.contains('A mesma está ligada ao controle de comissão pós paga', case=False),
+                    ['CAMPO', 'ORIGEM DO ERRO', 'TIPO DE ERRO', 'CATEGORIA DE ERRO']] = ['Controle de comissão pós paga', 'Financeiro Conciliado', 'Edição não Permitida', 'Sistêmico']
+
+# Cadastro enviado errado no Benner - Zupper
+processado_erro.loc[processado_erro['Mensagem Erro'].str.contains('Não foi possível definir o Local de destino!', case=False),
+                    ['CAMPO', 'ORIGEM DO ERRO', 'TIPO DE ERRO', 'CATEGORIA DE ERRO']] = ['Cadastro enviado errado no Benner', 'Cadastro incompleto', 'Sistema', 'Sistêmico']
+                    
+
+#---Realocações - Responsáveis, Empresas e Categorias de Erro---
 # Realocações - Suporte KCS (Falta de informação Gerencial e SABRE)
 processado_erro.loc[
     (processado_erro['CAMPO'].str.contains('Falta de informação Gerencial')),
@@ -185,12 +242,17 @@ processado_erro.loc[
     'RESPONSÁVEL'] = 'Operações - CORP'
  
 # Realocação - FCM
-clientes_fcm_str = '|'.join(map(str, clientes_fcm['Clientes FCM']))
+# clientes_fcm_str = '|'.join(map(str, clientes_fcm['Clientes FCM']))
  
-processado_erro['RESPONSÁVEL'] = processado_erro['Cliente'].apply(
-    lambda cliente: 'Operações - FCM' if any(cliente_fcm in cliente for cliente_fcm in clientes_fcm['Clientes FCM']) else processado_erro['RESPONSÁVEL'].iloc[0]
-)
- 
+# processado_erro['RESPONSÁVEL'] = processado_erro['Cliente'].apply(
+#     lambda cliente: 'Operações - FCM' if any(cliente_fcm in cliente for cliente_fcm in clientes_fcm['Clientes FCM']) else processado_erro['RESPONSÁVEL'].iloc[0]
+# )
+
+# Realocação - Operações - FCM
+processado_erro.loc[
+    (processado_erro['Canal de Vendas'].str.contains('FCM', case=False)),
+    'RESPONSÁVEL'] = 'Operações - FCM'
+
 # Realocações - Suporte KCS (Contrato de fornecedor)
 processado_erro.loc[
     (processado_erro['CAMPO'].str.contains('Contrato de fornecedor')),
