@@ -310,7 +310,7 @@ def geracao_email(relatorio=relatorio_erro, empresa='GRUPO KONTIK', email_envio=
     # email.Attachments.Add(dashboard_pdf)
     if empresa == 'GRUPO KONTIK' or empresa == 'KONTIK BUSINESS TRAVEL':
         email.Attachments.Add(quero_passagem)
-        email.Attachments.Add(dashboard_pdf)
+        #email.Attachments.Add(dashboard_pdf)
         # email.Attachments.Add(integra_tour)
     
     if empresa == 'GRUPO KONTIK':

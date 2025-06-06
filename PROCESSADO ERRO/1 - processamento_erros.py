@@ -54,8 +54,8 @@ parametros, list_erros, info, clientes_fcm = [
     for sheet in ['Parametros', 'Lista de erros', 'Info', 'Clientes FCM']]
  
 # Declaração de guias - Relatório DASH
-wb = load_workbook(data_path + 'Relatorio - Dash.xlsx')
-relatorio_base = wb['Processado Erro - BASE']
+dash = load_workbook(data_path + 'Relatorio - Dash.xlsx')
+relatorio_base = dash['Processado Erro - BASE']
  
 # Limpeza de planilha
 relatorio_base.delete_rows(2, relatorio_base.max_row)
@@ -211,12 +211,27 @@ processado_erro.loc[processado_erro['Mensagem Erro'].str.contains(' Esta account
 processado_erro.loc[processado_erro['Mensagem Erro'].str.contains('A mesma está ligada ao controle de comissão pós paga', case=False),
                     ['CAMPO', 'ORIGEM DO ERRO', 'TIPO DE ERRO', 'CATEGORIA DE ERRO']] = ['Controle de comissão pós paga', 'Financeiro Conciliado', 'Edição não Permitida', 'Sistêmico']
 
+# Concialização de cartão
+processado_erro.loc[processado_erro['Mensagem Erro'].str.contains('A mesma está ligada a conciliação de cartão', case=False),
+                    ['CAMPO', 'ORIGEM DO ERRO', 'TIPO DE ERRO', 'CATEGORIA DE ERRO']] = ['Conciliação de Cartão', 'Financeiro Conciliado', 'Edição não Permitida', 'Sistêmico']
+
+# Rateio de centrodecusto/projeto
+# processado_erro.loc[processado_erro['Mensagem Erro'].str.contains('centro de custo/projeto', case=False) |
+#                     processado_erro['Mensagem Erro'].str.contains('Ocorreu a seguinte exceção ao inserir o item da ordem de venda', case=False),
+#                     ['CAMPO', 'ORIGEM DO ERRO', 'TIPO DE ERRO', 'CATEGORIA DE ERRO']] = ['Falta de informação Gerencial', 'Rateio de centro de custo/projeto', 'Dados Gerenciais', 'Qualidade dos dados']
+
+# Caractere especial no campo - &
+processado_erro.loc[processado_erro['Mensagem Erro'].str.contains('A name contained an invalid character. Line', case=False) |
+                    processado_erro['Mensagem Erro'].str.contains('</', case=False) |
+                    processado_erro['Mensagem Erro'].str.contains('Whitespace is not allowed at this location', case=False),
+                    ['CAMPO', 'ORIGEM DO ERRO', 'TIPO DE ERRO', 'CATEGORIA DE ERRO']] = ['Caractere inválido', 'Caractere "&" invalido', 'Dados do Fornecedor', 'Qualidade dos dados']
+                    
 # Cadastro enviado errado no Benner - Zupper
 processado_erro.loc[processado_erro['Mensagem Erro'].str.contains('Não foi possível definir o Local de destino!', case=False),
                     ['CAMPO', 'ORIGEM DO ERRO', 'TIPO DE ERRO', 'CATEGORIA DE ERRO']] = ['Cadastro enviado errado no Benner', 'Cadastro incompleto', 'Sistema', 'Sistêmico']
                     
 
-#---Realocações - Responsáveis, Empresas e Categorias de Erro---
+#---Realocações - Responsáveis,Categorias de Erro, Origens do Erro e Tipo de Erro---
 # Realocações - Suporte KCS (Falta de informação Gerencial e SABRE)
 processado_erro.loc[
     (processado_erro['CAMPO'].str.contains('Falta de informação Gerencial')),
@@ -227,7 +242,7 @@ processado_erro.loc[
     (processado_erro['Cliente'] == 'Reembolsos Recebidos'),
     'RESPONSÁVEL'] = 'Operações - CORP'
  
-# Realocações - Operações - CORP (WS, WT, CT - MANUAL)
+# Realocações - Operações - CORP (OFFLINE - duplicado - WS, WT, CT - MANUAL)
 processado_erro.loc[
     (processado_erro['OBTS'] == 'MANUAL') &
     (processado_erro['Agente Emissão'] == 'WS') |
@@ -312,13 +327,14 @@ processado_erro.loc[
     (processado_erro['Grupo Empresarial'].str.contains('Grupo Lojas Renner')),
     'RESPONSÁVEL'] = 'Suporte KCS'
  
-# Realocações - Suporte KCS (WS, CT, WT - SABRE)
+# Realocações - Suporte KCS (ONLINE - WS, CT, WT - SABRE)
 processado_erro.loc[
     (processado_erro['OBTS'] == 'SABRE') &
     (processado_erro['Agente Emissão'].str.contains('WS') | processado_erro['Agente Emissão'].str.contains('CT') | processado_erro['Agente Emissão'].str.contains('WT')),
     'RESPONSÁVEL'] = 'Suporte KCS'
  
 # Realocação - Suporte Benner (Falta de Fornecedor - Sabre - Hotel - ONLINE)
+# Ajuste de responsável e categoria de erro
 processado_erro.loc[
     (processado_erro['CAMPO'].str.contains('Falta de Fornecedor')) &
     ((processado_erro['Agente Emissão'].str.contains('WS')) | (processado_erro['Agente Emissão'].str.contains('CT'))) &
@@ -326,7 +342,8 @@ processado_erro.loc[
     (processado_erro['Serviço'] == 'Hotel')),['RESPONSÁVEL', 'CATEGORIA DE ERRO']
 ] = ['Suporte Benner', 'Sistêmico']
 
-# Realocação - Operações - CORP (Falta de Fornecedor - KPMG - OFFLINE - Carro)
+# Realocação - Operações - CORP (Falta de Fornecedor - KPMG - OFFLINE - Carro - Data Emissão > 06/08/2024)
+# Ajuste de responsável e categoria de erro
 processado_erro.loc[
     (processado_erro['CAMPO'].str.contains('Falta de Fornecedor')) &
     (processado_erro['Grupo Empresarial'].str.contains('Grupo Kpmg')) &
@@ -351,6 +368,7 @@ processado_erro.loc[
     'RESPONSÁVEL'] = 'Suporte KCS'
  
 # Realocação - Suporte Benner (Falta de Fornecedor - GOVER - Hotel)
+# Ajuste de responsável e categoria de erro
 processado_erro.loc[
     (processado_erro['OBTS'] == 'GOVER') &
     (processado_erro['Serviço'] == 'Hotel') &
@@ -359,6 +377,7 @@ processado_erro.loc[
 ] = ['Suporte Benner', 'Sistêmico']
 
 # Realocação - Suporte Benner (Falta de Fornecedor - GOVER - Carro - ONLINE)
+# Ajuste de responsável e categoria de erro
 processado_erro.loc[
     (processado_erro['OBTS'] == 'GOVER') &
     (processado_erro['Serviço'] == 'Carro') &
@@ -367,6 +386,7 @@ processado_erro.loc[
 ] = ['Suporte Benner', 'Sistêmico']
  
 # Realocação - Suporte Benner (Falta de Fornecedor - Argo - Hotel - ONLINE)
+# Ajuste de responsável e categoria de erro
 processado_erro.loc[
     (processado_erro['OBTS'] == 'ARGO(TMS)') &
     (processado_erro['Serviço'] == 'Hotel') &
@@ -375,28 +395,30 @@ processado_erro.loc[
 ] = ['Suporte Benner', 'Sistêmico']
 
 # Realocação - Suporte Benner (Falta de Fornecedor - GOVER - Hotel)
+# Ajuste de responsável e categoria de erro
 processado_erro.loc[
     (processado_erro['OBTS'] == 'GOVER') &
     (processado_erro['Serviço'] == 'Hotel') &
     (processado_erro['CAMPO'].str.contains('Falta de Fornecedor')),['RESPONSÁVEL', 'CATEGORIA DE ERRO']
 ] = ['Suporte Benner', 'Sistêmico']
 
-# Realocação - Agencia Mercurio York
+# Realocação - Operações  - Mercurio York
 processado_erro.loc[
     (processado_erro['Cliente'] == 'Agencia Mercurio York'),
-    ['OBTS', 'RESPONSÁVEL']] = ['MANUAL', 'Operações Mercurio York']
+    ['OBTS', 'RESPONSÁVEL']] = ['MANUAL', 'Operações - Mercurio York']
  
-# Realocação - KONTRIP
+# Realocação - Operações - KONTRIP
 processado_erro.loc[
     (processado_erro['OBTS'].str.contains('KONTRIP')),
     'RESPONSÁVEL'] = 'Operações - KONTRIP'
 
-# Realocação - ZUPPER
+# Realocação - Operações - ZUPPER
 processado_erro.loc[
     (processado_erro['OBTS'].str.contains('ZUPPER')),
     'RESPONSÁVEL'] = 'Operações - ZUPPER'
  
 # Realocação - Suporte Benner (Cliente FEE no POS)
+# Ajuste de responsável e categoria de erro
 processado_erro.loc[
     (processado_erro['Cliente Fee POS'] == 'Cliente FEE no POS') &
     (processado_erro['CAMPO'].str.contains('Pagamento não permitido para cobrança')) &
@@ -420,6 +442,8 @@ agentes = [
     # Adicione os nomes dos agentes aqui
 ]
 
+# Realocação - Central de Emissão (Agente Emissão ou Agente Criação)
+# Ajuste de responsável e categoria de erro
 processado_erro.loc[
     processado_erro['Agente Emissão'].isin(agentes) | processado_erro['Agente Criação'].isin(agentes),
     ['RESPONSÁVEL', 'CATEGORIA DE ERRO']
@@ -433,6 +457,7 @@ processado_erro.loc[
     'RESPONSÁVEL'] = 'Suporte KCS'
 
 # Realocações - Suporte KCS (The INSERT statement conflicted with the FOREIGN KEY)
+# Ajuste de Categoria de erro, Campo, Origem do Erro e Tipo de Erro
 processado_erro.loc[
     (processado_erro['Mensagem Erro'].str.contains(
         'The INSERT statement conflicted with the FOREIGN KEY')),
@@ -450,10 +475,12 @@ processado_erro['Markup'] = processado_erro['Markup'].astype(float)
 processado_erro.loc[processado_erro['Markup']
                     > 0, 'RESPONSÁVEL'] = 'Central de Emissão'
 
-# Realocação - INOVENTS (Codigo Evento)
+# Realocação - INOVENTS
 processado_erro.loc[
     processado_erro['Canal de Vendas'].str.contains('INOVENTS'),
     'RESPONSÁVEL'] = 'INOVENTS'
+
+#---Preenchimento de Empresa---
 
 # Realocações - EMPRESA - KONTIK BUSINESS TRAVEL
 processado_erro.loc[
@@ -492,7 +519,10 @@ processado_erro.loc[
     (processado_erro['Mensagem Erro'].str.contains('Não foi possível definir o Local de destino!')),
      'RESPONSÁVEL'] = 'Suporte Benner'
 
+
+#---Informativos---
 # Verificação de duplicidade(Gover)
+# Verifica se há mais de 10 ocorrências do mesmo localizador - GOVER
 cont_localizador = processado_erro['Localizadora'].tolist()
  
 for row in range(len(processado_erro)):
@@ -510,6 +540,9 @@ for row in range(len(processado_erro)):
                   f' e requisição "{processado_erro.at[row, "Requisição"]}",'
                   f' feitas pelo consultor "{processado_erro.at[row, "Agente Emissão"]}"\033[m')
             break
+
+# Verifica se há Erros não identificados - Campo - Não Identificado
+print(f'\033[1;33m- Identificamos {qtd} novos erros não categorizados.\033[m') if (qtd := len(processado_erro[processado_erro["CAMPO"] == "Não identificado"])) > 1 else None
 
 # Salvar o arquivo original
 processado_erro.to_excel(data_path + 'Processado Erro.xlsx', index=False)
@@ -529,11 +562,11 @@ colunas = {
     'AP': 'EMPRESA','AQ': 'RESPONSÁVEL'
 }
  
-# Inserção de colunas
+# Inserção de cabeçalho
 for col, nome in colunas.items():
     relatorio_base[col + '1'] = nome
  
-# Inserção de valores
+# Inserção de informações
 for row in range(len(processado_erro)):
     for col, nome in colunas.items():
         relatorio_base[col + str(row + 2)] = processado_erro[nome][row]
@@ -574,13 +607,15 @@ def personalizacao(relatorio):
             row[1].font = Font(color="FF0000")
 
 personalizacao(relatorio_base)
+
 # Salvar relatorio base
-wb.save(data_path + 'Relatorio - Dash.xlsx')
+dash.save(data_path + 'Relatorio - Dash.xlsx')
 
 # Carregar a planilha original
 relatorio_dash = pd.read_excel(data_path + 'Relatorio - Dash.xlsx', sheet_name='Processado Erro - BASE')
 data_path = r'data-analysis-python\PROCESSADO ERRO\\'
 
+# Obter lista de empresas
 empresas = relatorio_dash['EMPRESA'].unique()
 
 # Defina o caminho do diretório onde os arquivos serão salvos
@@ -599,14 +634,14 @@ for empresa in empresas:
     df_empresa.to_excel(output_file, index=False)
 
     # Abrindo o arquivo Excel para aplicar formatação
-    wb = load_workbook(output_file)
-    ws = wb.active  # Pegando a primeira aba
+    dash = load_workbook(output_file)
+    aba_relatorio = dash.active  # Pegando a primeira aba
     
     # Aplicando a personalização
-    personalizacao(ws)
+    personalizacao(aba_relatorio)
     
     # Salvando as mudanças no arquivo Excel
-    wb.save(output_file)
+    dash.save(output_file)
 
     print(f'Relatorio - {empresa} - Salvo com sucesso!')
 print()
