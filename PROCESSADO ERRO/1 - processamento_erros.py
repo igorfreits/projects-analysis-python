@@ -183,8 +183,9 @@ processado_erro.loc[processado_erro['Mensagem Erro'].str.contains('Pnr já exist
                     ['CAMPO', 'ORIGEM DO ERRO', 'TIPO DE ERRO', 'CATEGORIA DE ERRO']] = ['Duplicidade de RLOC', 'Campo RLOC', 'Duplicidade de Contabilização', 'Qualidade dos dados']
 
 # Falta de status no trecho
-processado_erro.loc[processado_erro['Mensagem Erro'].str.contains('Falta informar o status no trecho', case=False),
-                    ['CAMPO', 'ORIGEM DO ERRO', 'TIPO DE ERRO', 'CATEGORIA DE ERRO']] = ['Falta informação nos trechos', 'Status do trecho', 'Dados do Fornecedor', 'Qualidade dos dados']
+processado_erro.loc[processado_erro['Mensagem Erro'].str.contains('Falta informar o status no trecho', case=False) |
+                    processado_erro['Mensagem Erro'].str.contains('Accouting aérea não possui trecho', case=False),
+                    ['CAMPO', 'ORIGEM DO ERRO', 'TIPO DE ERRO', 'CATEGORIA DE ERRO']] = ['Falta informação nos trechos', 'Status do trecho/Trecho', 'Dados do Fornecedor', 'Qualidade dos dados']
 
 # Duplicidade de Bilhete
 processado_erro.loc[processado_erro['Mensagem Erro'].str.contains('Verificação de bilhetes: Bilhete', case=False),
@@ -204,7 +205,7 @@ processado_erro.loc[processado_erro['Mensagem Erro'].str.contains('Módulo Opera
                     ['CAMPO', 'ORIGEM DO ERRO', 'TIPO DE ERRO', 'CATEGORIA DE ERRO']] = ['Forma de Pagamento indevida', 'Forma PG. e REC.', 'Dados do Fornecedor', 'Qualidade dos dados']
 
 # Conciliado BSP
-processado_erro.loc[processado_erro['Mensagem Erro'].str.contains(' Esta accounting está conciliada no BSP. Bilhete', case=False),
+processado_erro.loc[processado_erro['Mensagem Erro'].str.contains('Esta accounting está conciliada no BSP. Bilhete', case=False),
                     ['CAMPO', 'ORIGEM DO ERRO', 'TIPO DE ERRO', 'CATEGORIA DE ERRO']] = ['Bilhete conciliado', 'Concilização eletrônica Aérea', 'Edição não Permitida', 'Sistêmico']
 
 # Controle de Comissão pós paga
@@ -212,13 +213,15 @@ processado_erro.loc[processado_erro['Mensagem Erro'].str.contains('A mesma está
                     ['CAMPO', 'ORIGEM DO ERRO', 'TIPO DE ERRO', 'CATEGORIA DE ERRO']] = ['Controle de comissão pós paga', 'Financeiro Conciliado', 'Edição não Permitida', 'Sistêmico']
 
 # Concialização de cartão
-processado_erro.loc[processado_erro['Mensagem Erro'].str.contains('A mesma está ligada a conciliação de cartão', case=False),
+processado_erro.loc[processado_erro['Mensagem Erro'].str.contains('A mesma está ligada a conciliação de cartão', case=False) |
+                    processado_erro['Mensagem Erro'].str.contains('possui uma transação de cartão efetivada', case=False) |
+                    processado_erro['Mensagem Erro'].str.contains('Postar Venda Não foi possível identificar o vínculo ', case=False),
                     ['CAMPO', 'ORIGEM DO ERRO', 'TIPO DE ERRO', 'CATEGORIA DE ERRO']] = ['Conciliação de Cartão', 'Financeiro Conciliado', 'Edição não Permitida', 'Sistêmico']
 
-# Rateio de centrodecusto/projeto
-# processado_erro.loc[processado_erro['Mensagem Erro'].str.contains('centro de custo/projeto', case=False) |
-#                     processado_erro['Mensagem Erro'].str.contains('Ocorreu a seguinte exceção ao inserir o item da ordem de venda', case=False),
-#                     ['CAMPO', 'ORIGEM DO ERRO', 'TIPO DE ERRO', 'CATEGORIA DE ERRO']] = ['Falta de informação Gerencial', 'Rateio de centro de custo/projeto', 'Dados Gerenciais', 'Qualidade dos dados']
+#Rateio de centrodecusto/projeto
+processado_erro.loc[processado_erro['Mensagem Erro'].str.contains('centro de custo/projeto', case=False) |
+                    processado_erro['Mensagem Erro'].str.contains('Ocorreu a seguinte exceção ao inserir o item da ordem de venda', case=False),#
+                    ['CAMPO', 'ORIGEM DO ERRO', 'TIPO DE ERRO', 'CATEGORIA DE ERRO']] = ['Falta de informação Gerencial', 'Rateio de centro de custo/projeto', 'Dados Gerenciais', 'Qualidade dos dados']
 
 # Caractere especial no campo - &
 processado_erro.loc[processado_erro['Mensagem Erro'].str.contains('A name contained an invalid character. Line', case=False) |
