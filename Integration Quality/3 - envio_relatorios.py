@@ -4,13 +4,6 @@ import pandas as pd
 from datetime import datetime
 
 # Importando os arquivos
-relatorio_erro = pd.read_excel('data-analysis-python/Integration Quality/Relatorio - Dash.xlsx', sheet_name='Processado Erro - BASE')
-relatorio_erro_zupper = pd.read_excel('data-analysis-python/Integration Quality/EMPRESAS/Relatorio - ZUPPER VIAGENS.xlsx')
-relatorio_erro_corp = pd.read_excel('data-analysis-python/Integration Quality/EMPRESAS/Relatorio - KONTIK BUSINESS TRAVEL.xlsx')
-relatorio_erro_kontrip = pd.read_excel('data-analysis-python/Integration Quality/EMPRESAS/Relatorio - KONTRIP VIAGENS.xlsx')
-relatorio_erro_inovents = pd.read_excel('data-analysis-python/Integration Quality/EMPRESAS/Relatorio - INOVENTS.xlsx')
-relatorio_erro_grpktk = pd.read_excel('data-analysis-python/Integration Quality/EMPRESAS/Relatorio - GRUPO KONTIK.xlsx')
-
 novo_arquivo_resolvido = pd.read_excel('data-analysis-python/Integration Quality/Base.xlsx', sheet_name='Novo Arquivo')
 base_resolvido = pd.read_excel('data-analysis-python/Integration Quality/Base.xlsx', sheet_name='Resolvidos')
 
@@ -104,8 +97,32 @@ emails_inovents = {
         ]}
 
 
-def geracao_email(relatorio=relatorio_erro, empresa='GRUPO KONTIK', email_envio=emails_grpkontik['envio'], email_copia=emails_grpkontik['copia']):
+def geracao_email(empresa='GRUPO KONTIK', email_envio=emails_grpkontik['envio'], email_copia=emails_grpkontik['copia'], relatorio=None):
 
+    if empresa == 'ZUPPER VIAGENS': 
+        caminho = 'data-analysis-python/Integration Quality/EMPRESAS/Relatorio - ZUPPER VIAGENS.xlsx'
+    elif empresa == 'KONTIK BUSINESS TRAVEL':
+        caminho = 'data-analysis-python/Integration Quality/EMPRESAS/Relatorio - KONTIK BUSINESS TRAVEL.xlsx'
+    elif empresa == 'KONTRIP VIAGENS':
+        caminho = 'data-analysis-python/Integration Quality/EMPRESAS/Relatorio - KONTRIP VIAGENS.xlsx'
+    elif empresa == 'INOVENTS':
+        caminho = 'data-analysis-python/Integration Quality/EMPRESAS/Relatorio - INOVENTS.xlsx'
+    elif empresa == 'GRUPO KONTIK':
+        caminho = 'data-analysis-python/Integration Quality/EMPRESAS/Relatorio - GRUPO KONTIK.xlsx'
+    else:
+        print(f'\033[1;31m- Empresa {empresa} não encontrada!\033[m')
+        return
+
+    if not os.path.exists(caminho):
+        print(f'\033[1;33m- Arquivo não encontrado para {empresa}\033[m')
+        return
+
+    # Se chegou aqui, o arquivo existe
+    if empresa ==  'GRUPO KONTIK':
+        relatorio= pd.read_excel('data-analysis-python/Integration Quality/Relatorio - Dash.xlsx', sheet_name='Processado Erro - BASE')
+    else:
+        relatorio = pd.read_excel(caminho)
+    
     # Total de casos - Processado Erro
     total_casos = len(relatorio)
     
@@ -341,17 +358,17 @@ def geracao_email(relatorio=relatorio_erro, empresa='GRUPO KONTIK', email_envio=
 
     relatorio_dash = r'C:\Users\igorsantos\Desktop\DOCS\data-analysis-python\Integration Quality\Relatorio - Dash.xlsx'
 
-    email.Attachments.Add(relatorio)
 
-    # email.Attachments.Add(dashboard_pdf)
     if empresa == 'GRUPO KONTIK' or empresa == 'KONTIK BUSINESS TRAVEL':
         email.Attachments.Add(quero_passagem)
-        #email.Attachments.Add(dashboard_pdf)
+        email.Attachments.Add(dashboard_pdf)
         # email.Attachments.Add(integra_tour)
     
     if empresa == 'GRUPO KONTIK':
         email.Attachments.Remove(1)
         email.Attachments.Add(relatorio_dash)
+    else:
+        email.Attachments.Add(relatorio)
 
     email.SentOnBehalfOfName = remetente
     email.Save()
@@ -361,11 +378,13 @@ def geracao_email(relatorio=relatorio_erro, empresa='GRUPO KONTIK', email_envio=
         email.Delete()
     print(f'E-mail da empresa {empresa} criado com sucesso!')
 
+
+
+
 geracao_email()
-geracao_email(relatorio_erro_zupper, 'ZUPPER VIAGENS', emails_zupper['envio'], emails_zupper['copia'])
-geracao_email(relatorio_erro_corp, 'KONTIK BUSINESS TRAVEL', emails_corp['envio'],emails_corp['copia'])
-geracao_email(relatorio_erro_kontrip,'KONTRIP VIAGENS', emails_kontrip['envio'], emails_kontrip['copia'])
-geracao_email(relatorio_erro_inovents, 'INOVENTS', emails_inovents['envio'],emails_inovents['copia'])
-# geracao_email(relatorio_erro_grpktk, 'GRUPO KONTIK', emails_grpkontik['envio'], emails_grpkontik['copia'])
+geracao_email('ZUPPER VIAGENS', emails_zupper['envio'], emails_zupper['copia'])
+geracao_email('KONTIK BUSINESS TRAVEL', emails_corp['envio'],emails_corp['copia'])
+geracao_email('KONTRIP VIAGENS', emails_kontrip['envio'], emails_kontrip['copia'])
+geracao_email('INOVENTS', emails_inovents['envio'],emails_inovents['copia'])
 
 print('\033[1;32m-Emails criado com sucesso!\033[m')
