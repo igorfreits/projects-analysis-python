@@ -85,7 +85,7 @@ processado_erro['OBTS'] = processado_erro['OBTS'].str.replace(
  
 # Aplicação da máscara para substituir valores na coluna 'OBTS' - ZUPPER
 mask_zupper = (processado_erro['Canal de Vendas'].str.contains('ZUPPER', case=False) |
-               processado_erro['Grupo Empresarial'].str.contains('Zupper', case=False))
+               processado_erro['Grupo Empresarial'].str.contains('Grupo Zupper', case=False))
 processado_erro['OBTS'] = processado_erro['OBTS'].mask(mask_zupper, 'ZUPPER')
  
 # Aplicação da máscara para substituir valores na coluna 'OBTS' - KONTRIP
@@ -479,6 +479,16 @@ processado_erro['Markup'] = processado_erro['Markup'].astype(float)
 processado_erro.loc[processado_erro['Markup']
                     > 0, 'RESPONSÁVEL'] = 'Central de Emissão'
 
+# Realozação - Zupper
+processado_erro.loc[
+    processado_erro['OBTS'].str.contains('ZUPPER'),
+    'RESPONSÁVEL'] = 'Operações - ZUPPER'
+
+# Realocação - KONTRIP
+processado_erro.loc[
+    processado_erro['OBTS'].str.contains('KONTRIP'),
+    'RESPONSÁVEL'] = 'Operações - KONTRIP'
+
 # Realocação - INOVENTS
 processado_erro.loc[
     processado_erro['Canal de Vendas'].str.contains('INOVENTS'),
@@ -517,11 +527,6 @@ processado_erro.loc[
 processado_erro.loc[
     processado_erro['RESPONSÁVEL'].str.contains('K-CLUB'),
     'EMPRESA'] = 'KTK'
-
-# Realocação - Suporte Benner (Não foi possível definir o Local de destino! - Suporte Benner)
-processado_erro.loc[
-    (processado_erro['Mensagem Erro'].str.contains('Não foi possível definir o Local de destino!')),
-     'RESPONSÁVEL'] = 'Suporte Benner'
 
 
 #---Informativos---

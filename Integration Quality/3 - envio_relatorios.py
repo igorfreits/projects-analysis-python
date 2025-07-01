@@ -3,16 +3,17 @@ import win32com.client as win32
 import pandas as pd
 from datetime import datetime
 
+# Obtendo o nome do usuário atual
+usuario = os.getlogin()
 # Importando os arquivos
 novo_arquivo_resolvido = pd.read_excel('data-analysis-python/Integration Quality/Base.xlsx', sheet_name='Novo Arquivo')
 base_resolvido = pd.read_excel('data-analysis-python/Integration Quality/Base.xlsx', sheet_name='Resolvidos')
-
-# Caminho do arquivo do dashboard
-caminho_dashboard = r'C:\Users\igorsantos\Desktop\DOCS\data-analysis-python\Integration Quality\Relatorio - Dash.xlsx'
+integra_tour_base = pd.read_excel('data-analysis-python/Integration Quality/Relatorio - Integratour.xlsx', sheet_name='Integrado Erro')
+caminho_dashboard = f'C:\\Users\\{usuario}\\Desktop\\DOCS\\data-analysis-python\\Integration Quality\\Relatorio - Dash.xlsx'
 
 data_hoje = datetime.now().strftime('%d.%m.%Y')
 nome_pdf = f'Relatorio - {data_hoje}.pdf'
-caminho_saida_pdf = os.path.join('C:\\Users\\igorsantos\\Desktop\\DOCS\\data-analysis-python\\Integration Quality\\PDFs', nome_pdf)
+caminho_saida_pdf = os.path.join(f'C:\\Users\\{usuario}\\Desktop\\DOCS\\data-analysis-python\\Integration Quality\\PDFs', nome_pdf)
 
 # Inicia o Excel
 excel = win32.Dispatch('Excel.Application')
@@ -136,6 +137,11 @@ def geracao_email(empresa='GRUPO KONTIK', email_envio=emails_grpkontik['envio'],
     soma_aging_inclusao = len(relatorio.loc[relatorio['Aging Inclusão'].str.contains(
         '16 a 23 dias|24 a 31 dias|31 dias ou +')
         ])
+    
+    # integratour
+    integratour_hoje = integra_tour_base.loc[integra_tour_base['DATAENVIO'] == datetime.now().strftime('%d/%m/%Y')]
+    integratour_ontem = integra_tour_base.loc[integra_tour_base['DATAENVIO'] == (datetime.now() - pd.Timedelta(days=1)).strftime('%d/%m/%Y')]
+    print(f'\033[1;36m- Integratour ontem: {len(integratour_ontem)}\033[m')
     
     # Casos que retornaram
     handles_resolvidos = novo_arquivo_resolvido.loc[novo_arquivo_resolvido['Status'] == 'Resolvido', 'Handle PNR'].tolist()
@@ -347,20 +353,18 @@ def geracao_email(empresa='GRUPO KONTIK', email_envio=emails_grpkontik['envio'],
         email.HTMLBody = corpo_email_1 + corpo_email_3 + assinatura_html
 
     # Anexos
-    dashboard_pdf = r'C:\Users\igorsantos\Desktop\DOCS\data-analysis-python\Integration Quality\PDFs\Relatorio - ' + \
-        f'{datetime.now().strftime("%d.%m.%Y")}.pdf'
-    
-    quero_passagem = r'C:\Users\igorsantos\Desktop\DOCS\data-analysis-python\Integration Quality\Quero Passagem.xlsx'
-    
-    # integra_tour = r'C:\Users\igorsantos\Desktop\DOCS\data-analysis-python\Integration Quality\Contabilização Manual - IntegraTur.xlsx'       
-    relatorio = r'C:\Users\igorsantos\Desktop\DOCS\data-analysis-python\Integration Quality\EMPRESAS\Relatorio - ' + \
-    f'{empresa}.xlsx'
+    dashboard_pdf = f'C:\\Users\\{usuario}\\Desktop\\DOCS\\data-analysis-python\\Integration Quality\\PDFs\\Relatorio - {datetime.now().strftime("%d.%m.%Y")}.pdf'
 
-    relatorio_dash = r'C:\Users\igorsantos\Desktop\DOCS\data-analysis-python\Integration Quality\Relatorio - Dash.xlsx'
+    quero_passagem = f'C:\\Users\\{usuario}\\Desktop\\DOCS\\data-analysis-python\\Integration Quality\\Quero Passagem.xlsx'
+
+    # integra_tour = f'C:\\Users\\{usuario}\\Desktop\\DOCS\\data-analysis-python\\Integration Quality\\Contabilização Manual - IntegraTur.xlsx'
+    relatorio = f'C:\\Users\\{usuario}\\Desktop\\DOCS\\data-analysis-python\\Integration Quality\\EMPRESAS\\Relatorio - {empresa}.xlsx'
+
+    relatorio_dash = f'C:\\Users\\{usuario}\\Desktop\\DOCS\\data-analysis-python\\Integration Quality\\Relatorio - Dash.xlsx'
 
 
     if empresa == 'GRUPO KONTIK' or empresa == 'KONTIK BUSINESS TRAVEL':
-        email.Attachments.Add(quero_passagem)
+        # email.Attachments.Add(quero_passagem)
         email.Attachments.Add(dashboard_pdf)
         # email.Attachments.Add(integra_tour)
     
