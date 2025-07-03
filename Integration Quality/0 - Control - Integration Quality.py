@@ -4,10 +4,10 @@ import os
 data_path = 'data-analysis-python/Integration Quality/'
 
 scripts = [
-    "0 - Integrado Erro.py",
-    "1 - processamento_erros.py",
-    "2 - atualizacao_status.py",
-    "3 - envio_relatorios.py"
+    "1 - Integrado Erro.py",
+    "2 - processamento_erros.py",
+    "3 - atualizacao_status.py",
+    "4 - envio_relatorios.py"
 ]
 
 for script in scripts:
