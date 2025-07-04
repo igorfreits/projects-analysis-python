@@ -1,7 +1,7 @@
 import os
 import win32com.client as win32
 import pandas as pd
-from datetime import datetime
+from datetime import datetime, timedelta
 
 # Obtendo o nome do usuário atual
 usuario = os.getlogin()
@@ -9,6 +9,7 @@ usuario = os.getlogin()
 novo_arquivo_resolvido = pd.read_excel('data-analysis-python/Integration Quality/Base.xlsx', sheet_name='Novo Arquivo')
 base_resolvido = pd.read_excel('data-analysis-python/Integration Quality/Base.xlsx', sheet_name='Resolvidos')
 integra_tour_base = pd.read_excel('data-analysis-python/Integration Quality/Relatorio - Integratour.xlsx', sheet_name='Integrado Erro')
+relatorio_base = pd.read_excel('data-analysis-python/Integration Quality/Relatorio - Dash.xlsx', sheet_name='Processado Erro - BASE')
 caminho_dashboard = f'C:\\Users\\{usuario}\\Desktop\\DOCS\\data-analysis-python\\Integration Quality\\Relatorio - Dash.xlsx'
 
 data_hoje = datetime.now().strftime('%d.%m.%Y')
@@ -97,6 +98,7 @@ emails_inovents = {
         # Lista de emails para cópia - INOVENTS
         ]}
 
+vendas_integratour = int(input('Digite o número de vendas Integratour: '))
 
 def geracao_email(empresa='GRUPO KONTIK', email_envio=emails_grpkontik['envio'], email_copia=emails_grpkontik['copia'], relatorio=None):
 
@@ -119,7 +121,7 @@ def geracao_email(empresa='GRUPO KONTIK', email_envio=emails_grpkontik['envio'],
         return
 
     # Se chegou aqui, o arquivo existe
-    if empresa ==  'GRUPO KONTIK':
+    if empresa ==  'GRUPO KONTIK' or empresa == 'KONTIK BUSINESS TRAVEL':
         relatorio= pd.read_excel('data-analysis-python/Integration Quality/Relatorio - Dash.xlsx', sheet_name='Processado Erro - BASE')
     else:
         relatorio = pd.read_excel(caminho)
@@ -138,11 +140,7 @@ def geracao_email(empresa='GRUPO KONTIK', email_envio=emails_grpkontik['envio'],
         '16 a 23 dias|24 a 31 dias|31 dias ou +')
         ])
     
-    # integratour
-    integratour_hoje = integra_tour_base.loc[integra_tour_base['DATAENVIO'] == datetime.now().strftime('%d/%m/%Y')]
-    integratour_ontem = integra_tour_base.loc[integra_tour_base['DATAENVIO'] == (datetime.now() - pd.Timedelta(days=1)).strftime('%d/%m/%Y')]
-    print(f'\033[1;36m- Integratour ontem: {len(integratour_ontem)}\033[m')
-    
+   
     # Casos que retornaram
     handles_resolvidos = novo_arquivo_resolvido.loc[novo_arquivo_resolvido['Status'] == 'Resolvido', 'Handle PNR'].tolist()
 
@@ -156,7 +154,6 @@ def geracao_email(empresa='GRUPO KONTIK', email_envio=emails_grpkontik['envio'],
     }
 
     # Corrigindo o loop para adicionar casos retornados
-    
     for row in range(len(relatorio)):
         for handle in handles_resolvidos:
             if str(handle) in str(relatorio['Handle PNR'][row]):
@@ -247,16 +244,23 @@ def geracao_email(empresa='GRUPO KONTIK', email_envio=emails_grpkontik['envio'],
             except (IndexError):
                 campo_ofensor['campo'] = ''
                 campo_ofensor[ 'qtd'] = 0
+
+        vendas_ontem_obt = len(relatorio.loc[(relatorio['Data Inclusão'].dt.date == (
+            datetime.now().date() - timedelta(days=1))) & (relatorio['OBTS'].isin([
+                'ARGO(TMS)', 'SABRE', 'GOVER', 'LEMONTECH']))])
+
+        porcentagem_integratour = (vendas_ontem_obt / vendas_integratour) * 100 if vendas_ontem_obt > 0 else 0
+
+
+    
     #================================================================================================
 
     # Criando o email
     outlook = win32.Dispatch('outlook.application')
+    email = outlook.CreateItem(0)
 
     # Remetente
     remetente = 'suporte.benner@kontik.com.br'
-
-    # 
-    email = outlook.CreateItem(0)
 
     # Configurações do email
     email.to = ';'.join(email_envio)
@@ -291,7 +295,7 @@ def geracao_email(empresa='GRUPO KONTIK', email_envio=emails_grpkontik['envio'],
             <li> <strong>Aging Alteração acima de 15 Dias:</strong> {soma_aging_alteracao} casos, indicando a necessidade de atenção especial</li>
             <li> <strong>Aging Inclusão acima de 15 Dias:</strong> {soma_aging_inclusao} casos, indicando a necessidade de atenção especial</li>    
             <li> <strong>Casos que retornaram:</strong> Identificamos {len(casos_retornados[empresa])}: {casos_formatados}</li>
-            <li> <strong>Porcentagem de Erros:</strong> 
+            <li> <strong>Porcentagem de Erros:</strong>
                 <ul>    
                     <li>{porcentagem_qualidade_dados:.2f}% – Qualidade dos Dados</li>
                     <li>{porcentagem_sistemico:.2f}% – Sistêmico</li>
@@ -303,7 +307,7 @@ def geracao_email(empresa='GRUPO KONTIK', email_envio=emails_grpkontik['envio'],
     if empresa == 'KONTIK BUSINESS TRAVEL' or empresa == 'GRUPO KONTIK':
 
         corpo_email_2 = f"""
-
+            <li> <strong>Os números acima representam:</strong> {porcentagem_integratour:.2f}% das vendas integradas ontem</li>
             <li> <strong>Relatório do Quero Passagem:</strong> responsabilidade (coluna A) e Tipo de Erro (coluna B), sendo: 
                 <ul>
                     <li>Fornecedor: alterar para o CNPJ da viação (já contabilizado, apenas ajustar o fornecedor)</li>      

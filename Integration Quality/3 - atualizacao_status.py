@@ -1,5 +1,5 @@
 import pandas as pd
-from datetime import datetime
+from datetime import timedelta
 
 # Caminho dos arquivos
 data_path = 'data-analysis-python/Integration Quality/'
@@ -58,6 +58,16 @@ base_resolvidos['Data de Conclusão'] = pd.to_datetime(base_resolvidos['Data de 
 base_em_andamento = base_em_andamento[base_em_andamento['Status'] != 'Resolvido']
 base_em_andamento['Data Inclusão'] = pd.to_datetime(base_em_andamento['Data Inclusão']).dt.date
 base_novo['Data Inclusão'] = pd.to_datetime(base_novo['Data Inclusão']).dt.date
+
+# Exclui registros com mais de 6 meses - Resolvidos
+base_resolvidos['Data de Conclusão'] = pd.to_datetime(
+    base_resolvidos['Data de Conclusão'], errors='coerce', infer_datetime_format=True
+)
+
+data_limite = pd.to_datetime(data_atual) - pd.DateOffset(months=6)
+base_resolvidos = base_resolvidos[base_resolvidos['Data de Conclusão'] >= data_limite]
+
+# 
 
 # Salvar os dados no Excel sem modificar outras guias
 output_path = data_path + 'Base.xlsx'
