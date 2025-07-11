@@ -95,16 +95,6 @@ processado_erro['OBTS'] = processado_erro['OBTS'].mask(mask_kontrip, 'KONTRIP')
  
 # Tratamento de colunas - formatação de strings
 processado_erro['Mensagem Erro'] = processado_erro['Mensagem Erro'].astype(str)
-# parametros['Mensagem'] = parametros['Mensagem'].astype(str)
- 
-# # Atribuição de campos, origem do erro e tipo de erro
-# for row in range(len(processado_erro)):
-#     for row2 in range(len(parametros)):
-#         if parametros['Mensagem'][row2] in processado_erro['Mensagem Erro'][row]:
-#             processado_erro.at[row, 'CAMPO'] = parametros.at[row2, 'Campo']
-#             processado_erro.at[row, 'ORIGEM DO ERRO'] = parametros.at[row2, 'Origem do Erro']
-#             processado_erro.at[row, 'TIPO DE ERRO'] = parametros.at[row2, 'Tipo de Erro']
-#             processado_erro.at[row, 'CATEGORIA DE ERRO'] = parametros.at[row2, 'Categoria de Erro']
 
 #---Formatação de datas e aging---
 processado_erro['Aging Inclusão'] = (
@@ -138,13 +128,6 @@ processado_erro['Aging Alteração'] = pd.cut(processado_erro['Aging Alteração
 processado_erro['Data Inclusão'] = pd.to_datetime(processado_erro['Data Inclusão'], format='mixed', dayfirst=True, errors='coerce')
 processado_erro['Data Emissão'] = pd.to_datetime(processado_erro['Data Emissão'], format='mixed', dayfirst=True, errors='coerce')
 processado_erro['Data Alteração'] = pd.to_datetime(processado_erro['Data Alteração'], format='mixed', dayfirst=True, errors='coerce')
-
-# Atribuição - de responsáveis
-# for row in range(len(processado_erro)):
-#     for row2 in range(len(info)):
-#         if info['CAMPO_INFO'][row2] in processado_erro['CAMPO'][row]:
-#             processado_erro.at[row, 'RESPONSÁVEL'] = info.at[row2, 'RESPONSÁVEL_INFO']
-
 
 # Tratamento de Status Requisição
 processado_erro['Status Requisicao'] = np.where(processado_erro['Status Requisicao'].str.contains('-', na=False), 'OFF LINE', processado_erro['Status Requisicao'])
@@ -224,16 +207,18 @@ processado_erro.loc[processado_erro['Mensagem Erro'].str.contains('centro de cus
                     processado_erro['Mensagem Erro'].str.contains('Ocorreu a seguinte exceção ao inserir o item da ordem de venda', case=False),#
                     ['CAMPO', 'ORIGEM DO ERRO', 'TIPO DE ERRO', 'CATEGORIA DE ERRO']] = ['Falta de informação Gerencial', 'Rateio de centro de custo/projeto', 'Dados Gerenciais', 'Qualidade dos dados']
 
-# Caractere especial no campo - &
-processado_erro.loc[processado_erro['Mensagem Erro'].str.contains('A name contained an invalid character. Line', case=False) |
+# Caractere especial em campo Gerencial
+processado_erro.loc[processado_erro['Mensagem Erro'].str.contains('A name contained an invalid character', case=False) |
                     processado_erro['Mensagem Erro'].str.contains('</', case=False) |
-                    processado_erro['Mensagem Erro'].str.contains('Whitespace is not allowed at this location', case=False),
-                    ['CAMPO', 'ORIGEM DO ERRO', 'TIPO DE ERRO', 'CATEGORIA DE ERRO']] = ['Caractere inválido', 'Caractere "&" invalido', 'Dados do Fornecedor', 'Qualidade dos dados']
-                    
+                    processado_erro['Mensagem Erro'].str.contains('Whitespace is not allowed at this location', case=False) |
+                    processado_erro['Mensagem Erro'].str.contains('Erro ao processar PNR  | A semi colon character was expected', case=False)
+                    | processado_erro['Mensagem Erro'].str.contains("'*' is not a valid integer value", case=False),
+                    ['CAMPO', 'ORIGEM DO ERRO', 'TIPO DE ERRO', 'CATEGORIA DE ERRO']] = ['Caractere inválido', 'Caractere invalido em campo gerencial', 'Dados Gerenciais', 'Qualidade dos dados']
+
 # Cadastro enviado errado no Benner - Zupper
 processado_erro.loc[processado_erro['Mensagem Erro'].str.contains('Não foi possível definir o Local de destino!', case=False),
                     ['CAMPO', 'ORIGEM DO ERRO', 'TIPO DE ERRO', 'CATEGORIA DE ERRO']] = ['Cadastro enviado errado no Benner', 'Cadastro incompleto', 'Sistema', 'Sistêmico']
-                    
+
 
 #---Realocações - Responsáveis,Categorias de Erro, Origens do Erro e Tipo de Erro---
 # Realocações - Suporte KCS (Falta de informação Gerencial e SABRE)
