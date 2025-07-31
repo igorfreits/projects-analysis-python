@@ -169,7 +169,7 @@ processado_erro.loc[processado_erro['Mensagem Erro'].str.contains('Pnr já exist
 # Falta de status no trecho
 processado_erro.loc[processado_erro['Mensagem Erro'].str.contains('Falta informar o status no trecho', case=False) |
                     processado_erro['Mensagem Erro'].str.contains('Accouting aérea não possui trecho', case=False),
-                    ['CAMPO', 'ORIGEM DO ERRO', 'TIPO DE ERRO', 'CATEGORIA DE ERRO']] = ['Falta informação nos trechos', 'Status do trecho/Trecho', 'Dados do Fornecedor', 'Qualidade dos dados']
+                    ['CAMPO', 'ORIGEM DO ERRO', 'TIPO DE ERRO', 'CATEGORIA DE ERRO']] = ['Falta informação nos trechos', 'Atualização de Trechos', 'Dados do Fornecedor', 'Qualidade dos dados']
 
 # Duplicidade de Bilhete
 processado_erro.loc[processado_erro['Mensagem Erro'].str.contains('Verificação de bilhetes: Bilhete', case=False),
