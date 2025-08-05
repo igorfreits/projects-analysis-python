@@ -5,16 +5,17 @@ from datetime import datetime, timedelta
 
 # Obtendo o nome do usuário atual
 usuario = os.getlogin()
+data_path = f'C:\\Users\\{usuario}\\Desktop\\DOCS\\data-analysis-python\\Integration-Quality'
 # Importando os arquivos
-novo_arquivo_resolvido = pd.read_excel('data-analysis-python/Integration Quality/Base.xlsx', sheet_name='Novo Arquivo')
-base_resolvido = pd.read_excel('data-analysis-python/Integration Quality/Base.xlsx', sheet_name='Resolvidos')
-integra_tour_base = pd.read_excel('data-analysis-python/Integration Quality/Relatorio - Integratour.xlsx', sheet_name='Integrado Erro')
-relatorio_base = pd.read_excel('data-analysis-python/Integration Quality/Relatorio - Dash.xlsx', sheet_name='Processado Erro - BASE')
-caminho_dashboard = f'C:\\Users\\{usuario}\\Desktop\\DOCS\\data-analysis-python\\Integration Quality\\Relatorio - Dash.xlsx'
+novo_arquivo_resolvido = pd.read_excel(f'{data_path}\\Base.xlsx', sheet_name='Novo Arquivo')
+base_resolvido = pd.read_excel(f'{data_path}\\Base.xlsx', sheet_name='Resolvidos')
+integra_tour_base = pd.read_excel(f'{data_path}\\Relatorio - Integratour.xlsx', sheet_name='Integrado Erro')
+relatorio_base = pd.read_excel(f'{data_path}\\Relatorio - Dash.xlsx', sheet_name='Processado Erro - BASE')
+caminho_dashboard = f'{data_path}\\Relatorio - Dash.xlsx'
 
 data_hoje = datetime.now().strftime('%d.%m.%Y')
 nome_pdf = f'Relatorio - {data_hoje}.pdf'
-caminho_saida_pdf = os.path.join(f'C:\\Users\\{usuario}\\Desktop\\DOCS\\data-analysis-python\\Integration Quality\\PDFs', nome_pdf)
+caminho_saida_pdf = os.path.join(f'{data_path}\\PDFs', nome_pdf)
 
 # Inicia o Excel
 excel = win32.Dispatch('Excel.Application')
@@ -98,20 +99,22 @@ emails_inovents = {
         # Lista de emails para cópia - INOVENTS
         ]}
 
-vendas_integratour = int(input('Digite o número de vendas Integratour: '))
+vendas_integratour = 3000
+
+#= int(input('Digite o número de vendas Integratour: '))
 
 def geracao_email(empresa='GRUPO KONTIK', email_envio=emails_grpkontik['envio'], email_copia=emails_grpkontik['copia'], relatorio=None):
 
     if empresa == 'ZUPPER VIAGENS': 
-        caminho = 'data-analysis-python/Integration Quality/EMPRESAS/Relatorio - ZUPPER VIAGENS.xlsx'
+        caminho = 'data-analysis-python/Integration-Quality/EMPRESAS/Relatorio - ZUPPER VIAGENS.xlsx'
     elif empresa == 'KONTIK BUSINESS TRAVEL':
-        caminho = 'data-analysis-python/Integration Quality/EMPRESAS/Relatorio - KONTIK BUSINESS TRAVEL.xlsx'
+        caminho = 'data-analysis-python/Integration-Quality/EMPRESAS/Relatorio - KONTIK BUSINESS TRAVEL.xlsx'
     elif empresa == 'KONTRIP VIAGENS':
-        caminho = 'data-analysis-python/Integration Quality/EMPRESAS/Relatorio - KONTRIP VIAGENS.xlsx'
+        caminho = 'data-analysis-python/Integration-Quality/EMPRESAS/Relatorio - KONTRIP VIAGENS.xlsx'
     elif empresa == 'INOVENTS':
-        caminho = 'data-analysis-python/Integration Quality/EMPRESAS/Relatorio - INOVENTS.xlsx'
+        caminho = 'data-analysis-python/Integration-Quality/EMPRESAS/Relatorio - INOVENTS.xlsx'
     elif empresa == 'GRUPO KONTIK':
-        caminho = 'data-analysis-python/Integration Quality/EMPRESAS/Relatorio - GRUPO KONTIK.xlsx'
+        caminho = 'data-analysis-python/Integration-Quality/EMPRESAS/Relatorio - GRUPO KONTIK.xlsx'
     else:
         print(f'\033[1;31m- Empresa {empresa} não encontrada!\033[m')
         return
@@ -122,7 +125,7 @@ def geracao_email(empresa='GRUPO KONTIK', email_envio=emails_grpkontik['envio'],
 
     # Se chegou aqui, o arquivo existe
     if empresa ==  'GRUPO KONTIK' or empresa == 'KONTIK BUSINESS TRAVEL':
-        relatorio= pd.read_excel('data-analysis-python/Integration Quality/Relatorio - Dash.xlsx', sheet_name='Processado Erro - BASE')
+        relatorio= pd.read_excel(f'{data_path}\\Relatorio - Dash.xlsx', sheet_name='Processado Erro - BASE')
     else:
         relatorio = pd.read_excel(caminho)
     
@@ -357,14 +360,14 @@ def geracao_email(empresa='GRUPO KONTIK', email_envio=emails_grpkontik['envio'],
         email.HTMLBody = corpo_email_1 + corpo_email_3 + assinatura_html
 
     # Anexos
-    dashboard_pdf = f'C:\\Users\\{usuario}\\Desktop\\DOCS\\data-analysis-python\\Integration Quality\\PDFs\\Relatorio - {datetime.now().strftime("%d.%m.%Y")}.pdf'
+    dashboard_pdf = f'C:\\Users\\{usuario}\\Desktop\\DOCS\\data-analysis-python\\Integration-Quality\\PDFs\\Relatorio - {datetime.now().strftime("%d.%m.%Y")}.pdf'
 
-    quero_passagem = f'C:\\Users\\{usuario}\\Desktop\\DOCS\\data-analysis-python\\Integration Quality\\Quero Passagem.xlsx'
+    quero_passagem = f'C:\\Users\\{usuario}\\Desktop\\DOCS\\data-analysis-python\\Integration-Quality\\Quero Passagem.xlsx'
 
-    # integra_tour = f'C:\\Users\\{usuario}\\Desktop\\DOCS\\data-analysis-python\\Integration Quality\\Contabilização Manual - IntegraTur.xlsx'
-    relatorio = f'C:\\Users\\{usuario}\\Desktop\\DOCS\\data-analysis-python\\Integration Quality\\EMPRESAS\\Relatorio - {empresa}.xlsx'
+    # integra_tour = f'C:\\Users\\{usuario}\\Desktop\\DOCS\\data-analysis-python\\Integration-Quality\\Contabilização Manual - IntegraTur.xlsx'
+    relatorio = f'C:\\Users\\{usuario}\\Desktop\\DOCS\\data-analysis-python\\Integration-Quality\\EMPRESAS\\Relatorio - {empresa}.xlsx'
 
-    relatorio_dash = f'C:\\Users\\{usuario}\\Desktop\\DOCS\\data-analysis-python\\Integration Quality\\Relatorio - Dash.xlsx'
+    relatorio_dash = f'C:\\Users\\{usuario}\\Desktop\\DOCS\\data-analysis-python\\Integration-Quality\\Relatorio - Dash.xlsx'
 
 
     if empresa == 'GRUPO KONTIK' or empresa == 'KONTIK BUSINESS TRAVEL':

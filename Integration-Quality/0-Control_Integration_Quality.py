@@ -1,13 +1,15 @@
 import subprocess
 import os
 
-data_path = 'data-analysis-python/Integration Quality/'
+# Configuração de usuario e caminho
+usuario = os.getlogin()
+data_path = f'C:\\Users\\{usuario}\\Desktop\\DOCS\\data-analysis-python\\Integration-Quality\\'
 
 scripts = [
-    "1 - Integrado Erro.py",
-    "2 - processamento_erros.py",
-    "3 - atualizacao_status.py",
-    "4 - envio_relatorios.py"
+    "1-Integrado Erro.py",
+    "2-processamento_erros.py",
+    "3-atualizacao_status.py",
+    "4-envio_relatorios.py"
 ]
 
 for script in scripts:

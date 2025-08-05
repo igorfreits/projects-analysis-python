@@ -6,6 +6,7 @@ import os
 import numpy as np
 import re
 import shutil
+import win32com.client
  
 # Função para converter .xls para .xlsx
 def converter_xls_para_xlsx(caminho_arquivo):
@@ -32,11 +33,34 @@ def converter_xls_para_xlsx(caminho_arquivo):
         return None
 
 
-
 # ---Caminho dos arquivos---
+data_path = 'C:\\Users\\' + os.getlogin() + '\\Desktop\\DOCS\\data-analysis-python\\Integration-Quality\\'
+os.makedirs(data_path, exist_ok=True)
 
-# Caminho do diretório onde os arquivos estão localizados
-data_path = 'data-analysis-python/Integration Quality/'
+# Inicializa o Outlook
+outlook = win32com.client.Dispatch("Outlook.Application").GetNamespace("MAPI")
+
+# Acessa a caixa de e-mail compartilhada
+caixa_compartilhada = outlook.Folders.Item("Suporte Benner")
+
+# Acessa a pasta "Portal Wes - ERRO"
+pasta = caixa_compartilhada.Folders.Item("Caixa de Entrada").Folders.Item("Portal Wes - ERRO")
+
+# Ordena os emails por data decrescente (mais recentes primeiro)
+emails = pasta.Items
+emails.Sort("[ReceivedTime]", True)
+
+# Pega somente o último e-mail e salva o anexo
+usuario = os.getlogin()
+ultimo_email = emails.GetFirst()
+if ultimo_email.Attachments.Count > 0:
+    anexo = ultimo_email.Attachments.Item(1)
+    nome_anexo = anexo.FileName
+    caminho_anexo = os.path.join(data_path, nome_anexo)
+    
+    # Salva o anexo no diretório especificado
+    anexo.SaveAsFile(caminho_anexo)
+    print(f"Anexo '{nome_anexo}' salvo em: {caminho_anexo}")
 
 # Caminho do arquivo original
 arquivo_xls = data_path + 'Benner - Processado Erro 0.xls'
@@ -607,7 +631,7 @@ dash.save(data_path + 'Relatorio - Dash.xlsx')
 
 # Carregar a planilha original
 relatorio_dash = pd.read_excel(data_path + 'Relatorio - Dash.xlsx', sheet_name='Processado Erro - BASE')
-data_path = r'data-analysis-python/Integration Quality/'
+data_path = r'data-analysis-python/Integration-Quality/'
 
 # Obter lista de empresas
 empresas = relatorio_dash['EMPRESA'].unique()

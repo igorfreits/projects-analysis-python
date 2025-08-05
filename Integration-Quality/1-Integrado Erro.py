@@ -1,8 +1,11 @@
 import pandas as pd
 from datetime import datetime
+import os
 
+# Configuração de usuario e caminho
+usuario = os.getlogin()
 # Caminho dos arquivos
-data_path = 'data-analysis-python/Integration Quality/'
+data_path = f'C:\\Users\\{usuario}\\Desktop\\DOCS\\data-analysis-python\\Integration-Quality\\'
 
 # Carregar Excel
 arquivo_excel = pd.ExcelFile(data_path + 'Relatorio - Integratour.xlsx')
