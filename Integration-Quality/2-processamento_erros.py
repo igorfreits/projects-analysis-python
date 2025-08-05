@@ -631,8 +631,6 @@ dash.save(data_path + 'Relatorio - Dash.xlsx')
 
 # Carregar a planilha original
 relatorio_dash = pd.read_excel(data_path + 'Relatorio - Dash.xlsx', sheet_name='Processado Erro - BASE')
-data_path = r'data-analysis-python/Integration-Quality/'
-
 # Obter lista de empresas
 empresas = relatorio_dash['EMPRESA'].unique()
 
