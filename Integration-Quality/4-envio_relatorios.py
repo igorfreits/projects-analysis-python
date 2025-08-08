@@ -106,15 +106,15 @@ vendas_integratour = 3000
 def geracao_email(empresa='GRUPO KONTIK', email_envio=emails_grpkontik['envio'], email_copia=emails_grpkontik['copia'], relatorio=None):
 
     if empresa == 'ZUPPER VIAGENS': 
-        caminho = 'data-analysis-python/Integration-Quality/EMPRESAS/Relatorio - ZUPPER VIAGENS.xlsx'
+        caminho = data_path + '\\EMPRESAS\\Relatorio - ZUPPER VIAGENS.xlsx'
     elif empresa == 'KONTIK BUSINESS TRAVEL':
-        caminho = 'data-analysis-python/Integration-Quality/EMPRESAS/Relatorio - KONTIK BUSINESS TRAVEL.xlsx'
+        caminho = data_path + '\\EMPRESAS\\Relatorio - KONTIK BUSINESS TRAVEL.xlsx'
     elif empresa == 'KONTRIP VIAGENS':
-        caminho = 'data-analysis-python/Integration-Quality/EMPRESAS/Relatorio - KONTRIP VIAGENS.xlsx'
+        caminho = data_path + '\\EMPRESAS\\Relatorio - KONTRIP VIAGENS.xlsx'
     elif empresa == 'INOVENTS':
-        caminho = 'data-analysis-python/Integration-Quality/EMPRESAS/Relatorio - INOVENTS.xlsx'
+        caminho = data_path + '\\EMPRESAS\\Relatorio - INOVENTS.xlsx'
     elif empresa == 'GRUPO KONTIK':
-        caminho = 'data-analysis-python/Integration-Quality/EMPRESAS/Relatorio - GRUPO KONTIK.xlsx'
+        caminho = data_path + '\\EMPRESAS\\Relatorio - GRUPO KONTIK.xlsx'
     else:
         print(f'\033[1;31m- Empresa {empresa} não encontrada!\033[m')
         return
