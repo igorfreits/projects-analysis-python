@@ -371,13 +371,14 @@ def geracao_email(empresa='GRUPO KONTIK', email_envio=emails_grpkontik['envio'],
 
 
     if empresa == 'GRUPO KONTIK' or empresa == 'KONTIK BUSINESS TRAVEL':
+        pass
         # email.Attachments.Add(quero_passagem)
-        email.Attachments.Add(dashboard_pdf)
         # email.Attachments.Add(integra_tour)
     
     if empresa == 'GRUPO KONTIK':
-        email.Attachments.Remove(1)
         email.Attachments.Add(relatorio_dash)
+        email.Attachments.Add(dashboard_pdf)
+
     else:
         email.Attachments.Add(relatorio)
 

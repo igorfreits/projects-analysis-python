@@ -46,14 +46,15 @@ caixa_compartilhada = outlook.Folders.Item("Suporte Benner")
 # Acessa a pasta "Portal Wes - ERRO"
 pasta = caixa_compartilhada.Folders.Item("Caixa de Entrada").Folders.Item("Portal Wes - ERRO")
 
-# Ordena os emails por data decrescente (mais recentes primeiro)
+# Captura o email do dia atual
+hoje = datetime.now().date()
 emails = pasta.Items
-emails.Sort("[ReceivedTime]", True)
+email_do_dia = [email for email in emails if email.ReceivedTime.date() == hoje]
 
 # Pega somente o último e-mail e salva o anexo
 usuario = os.getlogin()
-ultimo_email = emails.GetFirst()
-if ultimo_email.Attachments.Count > 0:
+ultimo_email = email_do_dia[0] if email_do_dia else None
+if ultimo_email and ultimo_email.Attachments.Count > 0:
     anexo = ultimo_email.Attachments.Item(1)
     nome_anexo = anexo.FileName
     caminho_anexo = os.path.join(data_path, nome_anexo)
@@ -70,13 +71,12 @@ if os.path.exists(arquivo_xls):
     arquivo_xls = converter_xls_para_xlsx(arquivo_xls)
 
 # Arquivos Excel
-processado_erro = pd.read_excel(arquivo_xls)
+try:
+    processado_erro = pd.read_excel(arquivo_xls)
+except Exception as e:
+    print(f"Arquivo não baixado")
+
 realocacao = pd.read_excel(data_path + 'Realocacao.xlsx')
- 
-parametros, list_erros, info, clientes_fcm = [
-    pd.read_excel(data_path + 'Parametros.xlsx', sheet_name=sheet)
-   
-    for sheet in ['Parametros', 'Lista de erros', 'Info', 'Clientes FCM']]
  
 # Declaração de guias - Relatório DASH
 dash = load_workbook(data_path + 'Relatorio - Dash.xlsx')
