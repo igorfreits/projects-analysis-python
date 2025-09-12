@@ -44,60 +44,54 @@ except Exception as e:
 finally:
     excel.Quit()
 
-
-# Empresa - KONTIK BUSINESS TRAVEL
+# Empresa - KONTIK BUSINESS TRAVEL - KBT
 emails_corp = {
     'envio': [
-        # Lista de emails para envio - KONTIK BUSINESS TRAVEL
+        'wagneyoliveira@kontik.com.br','yurirodrigues@kontik.com.br','relatoriosgi@kontik.com.br',
+        'wellingtonribeiro@kontik.com.br','michellysilva@kontik.com.br','eduardomanso@kontik.com.br',
+        'vanessadias@kontik.com.br','giselecarmo@kontik.com.br','nucleonabr@kontik.com.br','cartaoaereo@kontik.com.br','jackelinenascimento@kontik.com.br',
+        'andreajorge@kontik.com.br','adailtonsantos@kontik.com.br','reinildosantos@kontik.com.br',
+        'andreiaalves@kontik.com.br','herbertsantana@kontik.com.br','camilasilva@kontik.com.br','robertobento@kontik.com.br','jacquelinesantos@kontik.com.br',
+        'anafeitosa@kontik.com.br','mylenasilva@kontik.com.br','samsung@kontik.com.br','giseledenck@kontik.com.br','leticiapinheiro@kontik.com.br','andressasilva@kontik.com.br'
     ],    
     'copia': [
-        # Lista de emails para cópia - KONTIK BUSINESS TRAVEL
-    ]}
+        'alexandrecastro@kontik.com.br','lanatakuma@kontik.com.br','thiagobatello@kontik.com.br','danielacoelho@kontik.com.br',
+        'rafaelzizzi@kontik.com.br','luisvasquez@kontik.com.br','pliniocarvalho@kontik.com.br'
+
+        ]}
 
 #Empresa - ZUPPER VIAGENS
 emails_zupper = {
     'envio': [
-        # Lista de emails para envio - ZUPPER VIAGENS
-    ],
+        'higorlima@zupper.com.br'],
     'copia': [
-        # Lista de emails para cópia - ZUPPER VIAGENS
-        ]}
+        'angelasilva@zupper.com.br','pliniocarvalho@kontik.com.br']}
 
 # Empresa - KONTRIP VIAGENS
 emails_kontrip = {
     'envio': [
-        # Lista de emails para envio - KONTRIP VIAGENS
-        ],
+        'emillysantos@kontrip.com.br', 'administrativo@kontrip.com.br'],
     'copia': [
-        # Lista de emails para cópia - KONTRIP VIAGENS
-        ]}
+        'alexandreberbel@kontrip.com.br','pliniocarvalho@kontik.com.br']}
 
 # Empresa - GRUPO KONTIK
 emails_grpkontik = {
-    'envio' : [
-        # Lista de emails para envio - GRUPO KONTIK
-            ],
-    'copia': [
-        # Lista de emails para cópia - GRUPO KONTIK
-              ]}
+    'envio' : ['mylenasilva@kontik.com.br','icaroxavier@kontik.com.br',
+            'conciliacao_aereo@kontik.com.br','suporte.benner@kontik.com.br','thiagobatello@kontik.com.br',
+            'wellingtonribeiro@kontik.com.br'],
+    'copia': ['biancasantos@kontik.com.br','luisvasquez@kontik.com.br',
+              'pliniocarvalho@kontik.com.br', 'williancardoso@kontik.com.br']}
 
 # Empresa - KTK
 emails_ktk = {
-    'envio' : [
-        # Lista de emails para envio - KTK
-        ],
-    'copia': [
-        # Lista de emails para cópia - KTK
-        ]}
+    'envio' : ['mariatrindade@kontik.com.br'],
+    'copia': ['girlacarneiro@kontik.com.br','pliniocarvalho@kontik.com.br']}
 
 # Empresa - INOVENTS
 emails_inovents = {
-    'envio' : [
-        # Lista de emails para envio - INOVENTS
-        ],
-    'copia': [
-        # Lista de emails para cópia - INOVENTS
-        ]}
+    'envio' : ['mariatrindade@kontik.com.br','flaviomazzola@inovents.com.br'],
+    'copia': ['alexandrecastro@kontik.com.br','administrativo@inovents.com.br','lucianagarcez@inovents.com.br','pliniocarvalho@kontik.com.br']}
+
 
 vendas_integratour = 3000
 
@@ -273,7 +267,7 @@ def geracao_email(empresa='GRUPO KONTIK', email_envio=emails_grpkontik['envio'],
     email.Subject = f'📊 Análise Diária - Qualidade de Integração | {datetime.now().strftime("%d/%m/%Y")} | {empresa}' 
 
     # Links
-    link_sd = 'Inserir link do Service Desk aqui'
+    link_sd = 'https://grupokontik.atlassian.net/servicedesk/customer/portal/4/group/111'
     link_bi = 'Inserir link do Power BI aqui'
 
     # Corpo do email 1
@@ -287,7 +281,7 @@ def geracao_email(empresa='GRUPO KONTIK', email_envio=emails_grpkontik['envio'],
 
     <p>Segue abaixo a análise detalhada do <strong>Processado Erro</strong>, com base no arquivo recebido hoje.</p>
     
-    <p><strong>📌 Para solicitações ao Suporte Benner, é imprescindível a abertura de chamado via Service Desk <a href="{link_sd}" style="color: #007bff;">aqui</a> ou no caminho:
+    <p><strong>📌 Para solicitações ao Suporte Benner, é imprescindível a abertura de chamado via Jira <a href="{link_sd}" style="color: #007bff;">aqui</a> ou no caminho:
     <br>➡️ Portal Benner → Contabilização → Pendentes (Processado Erro)</strong></p>
 
     <p>🔗<a href="{link_bi}" style="color: #007bff;"><strong>Clique aqui para acessar o Power Bi</strong></a></p>
@@ -309,8 +303,8 @@ def geracao_email(empresa='GRUPO KONTIK', email_envio=emails_grpkontik['envio'],
 
     if empresa == 'KONTIK BUSINESS TRAVEL' or empresa == 'GRUPO KONTIK':
 
+#<li> <strong>Os números acima representam:</strong> {porcentagem_integratour:.2f}% das vendas integradas ontem</li>
         corpo_email_2 = f"""
-            <li> <strong>Os números acima representam:</strong> {porcentagem_integratour:.2f}% das vendas integradas ontem</li>
             <li> <strong>Relatório do Quero Passagem:</strong> responsabilidade (coluna A) e Tipo de Erro (coluna B), sendo: 
                 <ul>
                     <li>Fornecedor: alterar para o CNPJ da viação (já contabilizado, apenas ajustar o fornecedor)</li>      
@@ -371,8 +365,7 @@ def geracao_email(empresa='GRUPO KONTIK', email_envio=emails_grpkontik['envio'],
 
 
     if empresa == 'GRUPO KONTIK' or empresa == 'KONTIK BUSINESS TRAVEL':
-        pass
-        # email.Attachments.Add(quero_passagem)
+        email.Attachments.Add(quero_passagem)
         # email.Attachments.Add(integra_tour)
     
     if empresa == 'GRUPO KONTIK':

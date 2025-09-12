@@ -450,9 +450,10 @@ processado_erro.loc[
      (processado_erro['CAMPO'].str.contains('Bilhete duplicado'))),
     'RESPONSÁVEL'] = 'Conciliação aérea'
 
-# Realocação - Central de Emissão (Markup) por Agente Emissão
-agentes = [
-    # Adicione os nomes dos agentes aqui
+# Realocação - Central de Emissão (Agente Emissão ou Agente Criação)
+agentes = ['Alexander Perez Alves','Ana Paula Costa Feitosa','Beatrys Ferreira Rocha','Clayton Alves de Rezende','Flavia Constanzi do Nascimento',
+           'Gisele Soares Carmo','Icaro Gabriel Pimentel Gomes Xavier','Itamar de Souza','Juliana dos Santos Pinto','Leandra Vitoria Gomes Santos',
+           'MARKUP','Mylena Mendonca Santos da Silva','RAFAEL LIMA DA SILVA','teste_produtosaéreos','Wagney Araujo de Oliveira','Wellington Ribeiro da Silva'
 ]
 
 # Realocação - Central de Emissão (Agente Emissão ou Agente Criação)
