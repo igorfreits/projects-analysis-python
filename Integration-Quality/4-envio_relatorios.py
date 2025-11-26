@@ -9,7 +9,7 @@ data_path = f'C:\\Users\\{usuario}\\Desktop\\DOCS\\data-analysis-python\\Integra
 # Importando os arquivos
 novo_arquivo_resolvido = pd.read_excel(f'{data_path}\\Base.xlsx', sheet_name='Novo Arquivo')
 base_resolvido = pd.read_excel(f'{data_path}\\Base.xlsx', sheet_name='Resolvidos')
-integra_tour_base = pd.read_excel(f'{data_path}\\Relatorio - Integratour.xlsx', sheet_name='Integrado Erro')
+#integra_tour_base = pd.read_excel(f'{data_path}\\Relatorio - Integratour.xlsx', sheet_name='Integrado Erro')
 relatorio_base = pd.read_excel(f'{data_path}\\Relatorio - Dash.xlsx', sheet_name='Processado Erro - BASE')
 caminho_dashboard = f'{data_path}\\Relatorio - Dash.xlsx'
 
@@ -51,12 +51,12 @@ emails_corp = {
         'wellingtonribeiro@kontik.com.br','michellysilva@kontik.com.br','eduardomanso@kontik.com.br',
         'vanessadias@kontik.com.br','giselecarmo@kontik.com.br','nucleonabr@kontik.com.br','cartaoaereo@kontik.com.br','jackelinenascimento@kontik.com.br',
         'andreajorge@kontik.com.br','adailtonsantos@kontik.com.br','reinildosantos@kontik.com.br',
-        'andreiaalves@kontik.com.br','herbertsantana@kontik.com.br','camilasilva@kontik.com.br','robertobento@kontik.com.br','jacquelinesantos@kontik.com.br',
-        'anafeitosa@kontik.com.br','mylenasilva@kontik.com.br','samsung@kontik.com.br','giseledenck@kontik.com.br','leticiapinheiro@kontik.com.br','andressasilva@kontik.com.br'
+        'andreiaalves@kontik.com.br','herbertsantana@kontik.com.br','robertobento@kontik.com.br','jacquelinesantos@kontik.com.br',
+        'anafeitosa@kontik.com.br','alinemarinho@kontik.com.br','mylenasilva@kontik.com.br','samsung@kontik.com.br','giseledenck@kontik.com.br','leticiapinheiro@kontik.com.br','andressasilva@kontik.com.br'
     ],    
     'copia': [
         'alexandrecastro@kontik.com.br','lanatakuma@kontik.com.br','thiagobatello@kontik.com.br','danielacoelho@kontik.com.br',
-        'rafaelzizzi@kontik.com.br','luisvasquez@kontik.com.br','pliniocarvalho@kontik.com.br'
+        'rafaelzizzi@kontik.com.br','pliniocarvalho@kontik.com.br'
 
         ]}
 
@@ -79,8 +79,7 @@ emails_grpkontik = {
     'envio' : ['mylenasilva@kontik.com.br','icaroxavier@kontik.com.br',
             'conciliacao_aereo@kontik.com.br','suporte.benner@kontik.com.br','thiagobatello@kontik.com.br',
             'wellingtonribeiro@kontik.com.br'],
-    'copia': ['biancasantos@kontik.com.br','luisvasquez@kontik.com.br',
-              'pliniocarvalho@kontik.com.br', 'williancardoso@kontik.com.br']}
+    'copia': ['pliniocarvalho@kontik.com.br', 'williancardoso@kontik.com.br']}
 
 # Empresa - KTK
 emails_ktk = {
@@ -356,7 +355,7 @@ def geracao_email(empresa='GRUPO KONTIK', email_envio=emails_grpkontik['envio'],
     # Anexos
     dashboard_pdf = f'C:\\Users\\{usuario}\\Desktop\\DOCS\\data-analysis-python\\Integration-Quality\\PDFs\\Relatorio - {datetime.now().strftime("%d.%m.%Y")}.pdf'
 
-    quero_passagem = f'C:\\Users\\{usuario}\\Desktop\\DOCS\\data-analysis-python\\Integration-Quality\\Quero Passagem.xlsx'
+    #quero_passagem = f'C:\\Users\\{usuario}\\Desktop\\DOCS\\data-analysis-python\\Integration-Quality\\Quero Passagem.xlsx'
 
     # integra_tour = f'C:\\Users\\{usuario}\\Desktop\\DOCS\\data-analysis-python\\Integration-Quality\\Contabilização Manual - IntegraTur.xlsx'
     relatorio = f'C:\\Users\\{usuario}\\Desktop\\DOCS\\data-analysis-python\\Integration-Quality\\EMPRESAS\\Relatorio - {empresa}.xlsx'
@@ -365,7 +364,7 @@ def geracao_email(empresa='GRUPO KONTIK', email_envio=emails_grpkontik['envio'],
 
 
     if empresa == 'GRUPO KONTIK' or empresa == 'KONTIK BUSINESS TRAVEL':
-        email.Attachments.Add(quero_passagem)
+        pass#email.Attachments.Add(quero_passagem)
         # email.Attachments.Add(integra_tour)
     
     if empresa == 'GRUPO KONTIK':
