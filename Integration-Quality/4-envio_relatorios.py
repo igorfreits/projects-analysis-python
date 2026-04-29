@@ -348,7 +348,7 @@ def geracao_email(empresa='GRUPO KONTIK', email_envio=emails_grpkontik['envio'],
 
     # Definição de corpo dos e-mails
     if empresa == 'KONTIK BUSINESS TRAVEL' or empresa == 'GRUPO KONTIK':
-        email.HTMLBody = corpo_email_1 + corpo_email_2 + corpo_email_3 + assinatura_html
+        email.HTMLBody = corpo_email_1 + corpo_email_3 + assinatura_html
     else:
         email.HTMLBody = corpo_email_1 + corpo_email_3 + assinatura_html
 

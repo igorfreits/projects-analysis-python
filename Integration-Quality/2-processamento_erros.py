@@ -228,7 +228,7 @@ processado_erro.loc[processado_erro['Mensagem Erro'].str.contains('A mesma está
 
 #Rateio de centrodecusto/projeto
 processado_erro.loc[processado_erro['Mensagem Erro'].str.contains('centro de custo/projeto', case=False) |
-                    processado_erro['Mensagem Erro'].str.contains('Ocorreu a seguinte exceção ao inserir o item da ordem de venda', case=False),#
+                    processado_erro['Mensagem Erro'].str.contains('Ocorreu a seguinte exceção ao inserir o item da ordem de venda', case=False),
                     ['CAMPO', 'ORIGEM DO ERRO', 'TIPO DE ERRO', 'CATEGORIA DE ERRO']] = ['Falta de informação Gerencial', 'Rateio de centro de custo/projeto', 'Dados Gerenciais', 'Qualidade dos dados']
 
 # Caractere especial em campo Gerencial
