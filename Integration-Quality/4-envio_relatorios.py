@@ -51,7 +51,7 @@ emails_corp = {
         'wellingtonribeiro@kontik.com.br','michellysilva@kontik.com.br','eduardomanso@kontik.com.br',
         'vanessadias@kontik.com.br','giselecarmo@kontik.com.br','nucleonabr@kontik.com.br','cartaoaereo@kontik.com.br','jackelinenascimento@kontik.com.br',
         'andreajorge@kontik.com.br','adailtonsantos@kontik.com.br','reinildosantos@kontik.com.br',
-        'andreiaalves@kontik.com.br','herbertsantana@kontik.com.br','robertobento@kontik.com.br','jacquelinesantos@kontik.com.br',
+        'andreiaalves@kontik.com.br','herbertsantana@kontik.com.br','jacquelinesantos@kontik.com.br',
         'anafeitosa@kontik.com.br','alinemarinho@kontik.com.br','mylenasilva@kontik.com.br','samsung@kontik.com.br','giseledenck@kontik.com.br','leticiapinheiro@kontik.com.br','andressasilva@kontik.com.br'
     ],    
     'copia': [
@@ -65,7 +65,7 @@ emails_zupper = {
     'envio': [
         'higorlima@zupper.com.br'],
     'copia': [
-        'angelasilva@zupper.com.br','pliniocarvalho@kontik.com.br']}
+        'angelasilva@zupper.com.br','pliniocarvalho@kontik.com.br','financeiro@zupper.com.br']}
 
 # Empresa - KONTRIP VIAGENS
 emails_kontrip = {
@@ -83,12 +83,12 @@ emails_grpkontik = {
 
 # Empresa - KTK
 emails_ktk = {
-    'envio' : ['mariatrindade@kontik.com.br'],
-    'copia': ['girlacarneiro@kontik.com.br','pliniocarvalho@kontik.com.br']}
+    'envio' : ['girlacarneiro@kontik.com.br'],
+    'copia': ['pliniocarvalho@kontik.com.br']}
 
 # Empresa - INOVENTS
 emails_inovents = {
-    'envio' : ['mariatrindade@kontik.com.br','flaviomazzola@inovents.com.br'],
+    'envio' : ['flaviomazzola@inovents.com.br'],
     'copia': ['alexandrecastro@kontik.com.br','administrativo@inovents.com.br','lucianagarcez@inovents.com.br','pliniocarvalho@kontik.com.br']}
 
 
